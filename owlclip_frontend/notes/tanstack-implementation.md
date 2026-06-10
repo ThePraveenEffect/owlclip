@@ -49,4 +49,36 @@ used for refetching & caching the data.
 queryKey always be unique.
 
 
-second property:queryfn
+second property:  queryfn - function to fetch. or run.
+
+```
+export function useAuth(){
+    return  useQuery({
+        queryKey:["me"],
+        queryFn: getMe,
+        select: (data) => data?.user,
+        retry: false,
+
+        staleTime: 1000*60*5,
+    })
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GROQ_API_KEY=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

@@ -1,8 +1,7 @@
-from sqlalchemy import select
+from sqlalchemy import select,update 
 from sqlalchemy.exc import IntegrityError
 from app.models.User import User
 from datetime import datetime, timezone
-from sqlalchemy import update  
 
 async def get_user_by_email(db, email):
     result = await db.execute(

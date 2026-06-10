@@ -402,7 +402,7 @@ def _parse_segments(
                         / 10_000_000
                     )
 
-                    duration = (
+                    duration = (        
                         word.get("Duration", 0)
                         / 10_000_000
                     )

@@ -4,15 +4,16 @@ from app.routers.v1 import (
     auth, 
     payments, 
     upload,
-    profile
+    profile,
+    subtitle
 )
 
 v1_router = APIRouter(prefix="/api/v1")
 
 v1_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 v1_router.include_router(upload.router, tags=["Upload"])
-v1_router.include_router(payments.router, prefix="/payments", tags=["Payments"])
+v1_router.include_router(payments.router, prefix="/payment", tags=["Payments"])
 v1_router.include_router(profile.router, prefix="/profile", tags=["Profile"])
-
+v1_router.include_router(subtitle.router, prefix="/clips", tags=["Clips"])
 
 

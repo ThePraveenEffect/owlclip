@@ -5,7 +5,7 @@ from typing import Optional, List
 import json 
 
 
-async def get_videojob(db, job_id: int) -> Optional[UploadJob]:
+async def get_videojob(db, job_id: str) -> Optional[UploadJob]:
     result = await db.execute(select(UploadJob).where(UploadJob.job_id == job_id))
     return result.scalar_one_or_none()
 
@@ -50,3 +50,4 @@ async def save_final_clips(
     )
     await db.execute(stmt)
     await db.commit()
+

@@ -1,5 +1,17 @@
-import { env } from "@/src/config/env"
+import { env } from "@/config/env";
+console.log(env.BASE_URL)
 
+
+export function doFetch(endpoint:string, options: RequestInit = {}){
+     return fetch(`${env.BASE_URL}${endpoint}`, {
+    credentials: "include",  
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+    ...options,
+  });
+}
 
 
 export async function apiClient(
@@ -7,25 +19,49 @@ endpoint:string,
 options: RequestInit = {}
 
 ){
-    const response = await fetch(
-        `${env.BASE_URL}${endpoint}`,{
-            credentials:"include",
-            headers:{
-                "Content-Type":"application/json",
-            },
 
-            ...options,
-        }
-    );
+   let response:Response;
 
-    const data = await response.json();
+   try{
+       response = await doFetch(endpoint, options);
 
-    if(!response.ok){
-        throw new Error(
-      data.detail || "API Error"
-    );
-    }
+   } catch(error){
+
+       console.error("Network error:", error);
+        throw new Error("Failed to reach server. Check your connection or backend availability.");
+   }
+
+   if( response.status === 401){
+
+    try{
+        const refreshResponse = await doFetch("/api/v1/auth/refresh",{
+            method:"POST",
+        });
+
+         if (!refreshResponse.ok) {
+       throw new Error("Unauthorized. Please log in again.");
+     }
+        response = await doFetch(endpoint, options);
+    } catch(refreshError){
+         console.error("Refresh failed:", refreshError);
+         throw refreshError;
+    }    
+   }
 
 
-    return data;
+   const data = await response.json();
+
+   if(!response.ok){
+  const error = new Error(data?.detail || data?.message || `HTTP ${response.status}: API Error`) as Error & { code?: string; issues?: any[] };
+  
+  if(data?.error) {
+    error.code = data.error.code;
+    error.issues = data.error.issues;
+  }
+  
+  throw error;
+}
+
+   return data;
+
 }

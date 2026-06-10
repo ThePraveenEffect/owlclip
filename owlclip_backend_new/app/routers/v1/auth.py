@@ -5,6 +5,7 @@ from app.core.database import get_db
 from app.services.auth import signup_service, login_service
 from app.core.security import create_access_token, create_refresh_token
 from app.core.config import Settings
+from app.core.security import decode_token
 import logging
 
 logger = logging.getLogger(__name__)
@@ -83,38 +84,50 @@ async def logout(request: Request):
     
     return response
 
+
+
+
 @router.post("/refresh")
 async def refresh(request: Request):
-    """✅ Token rotation with validation"""
-    from app.core.security import decode_token
-    
+    """✅ Single-use refresh window: Only issues short-lived access tokens"""
+
     refresh_token = request.cookies.get("refresh_token")
-    
+
+    # 1. If refresh token is missing, return clean 401 JSON so React can redirect
     if not refresh_token:
-        raise HTTPException(status_code=401, detail="Refresh token missing")
-    
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "detail": "Session expired. Please login again."}
+        )
+
     payload = decode_token(refresh_token)
-    
+
+    # 2. If token is expired or altered, return clean 401 JSON
     if not payload or payload.get("type") != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
-    
+        return JSONResponse(
+            status_code=401,
+            content={"success": False, "detail": "Invalid session. Please login again."}
+        )
+
+    # 3. Valid refresh token found -> Issue ONLY a short-lived access token
     user_id = payload.get("user_id")
     new_access_token = create_access_token({"user_id": user_id})
-    
+
     response_data = {
         "success": True,
         "message": "Token refreshed",
         "token_type": "bearer"
     }
-    
+
     response = JSONResponse(content=response_data, status_code=200)
     cookie_params = get_secure_cookie_params()
-    
+
+    # 4. Set the new temporary access token
     response.set_cookie(
         key="access_token",
         value=new_access_token,
-        max_age=900,
+        max_age=900,  # 15 minutes
         **cookie_params
     )
-    
+
     return response

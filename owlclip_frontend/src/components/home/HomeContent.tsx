@@ -14,9 +14,15 @@ import {
   Sparkles
 } from 'lucide-react';
 
+import { ThemeToggle } from '../ThemeToggle';
 
+// import {OWLCLIP_AVATARS} from "@/lib/utils";
 import {Button} from '@/components/ui/button';
-import { useAuth } from '@/src/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
+import UserProfile from './UserProfile';
+import { DemoVideo } from './DemoVideo';
+import {JobCreate} from './JobCreate'
+
 
 
 interface HomeClientProps {
@@ -26,86 +32,125 @@ interface HomeClientProps {
 
 
 
-export default function Home({token} :HomeClientProps) {
-  const [email, setEmail] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+export default function Home() {
 
   
   const {
     data: user,
-    isLoading:loading,
+    isLoading,
     error
   } = useAuth();
 
    console.log(user)
 
  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <button>Login</button>;
-  }
-
-
-  return (
-    <div className="min-h-screen bg-white">
-      
-      <header className="  backdrop-blur-md sticky top-0 z-50">
-  <div className="max-w-6xl mx-auto px-6 py-3"> {/* Reduced max-width to bring elements closer */}
-    <div className="flex items-center justify-between">
-      <p>Welcome {user?.name}</p>
-{/* Brand Section */}
-<div className="flex items-center gap-1">
-  {/* Logo Container - Added a subtle hover lift for a "non-robotic" feel */}
-  <div className="relative w-20 h-20 shrink-0 transition-transform hover:scale-105 duration-300 ease-out">
-    <Image 
-      src="/logo.png" 
-      alt="OwlClip Logo"
-      fill
-      className="object-contain drop-shadow-sm" // Subtle shadow makes PNGs pop
-      priority
-    />
-  </div>
-  
-  {/* Brand Name - Shifted tracking to 'tighter' to match a heavy, large logo */}
-  <div className="flex flex-col ">
-    <span className="text-3xl font-black text-neutral-900 tracking-tighter leading-none">
-      OwlClip
-    </span>
-   
-  </div>
-
-
-</div>
-
-  <div className="flex items-center gap-4"> 
-    
-    
-    {/* Action Button - More "Squircle" shape to match the logo */}
-      <Button  className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors">
-         <Link href="/signup">Signup</Link>
-      </Button>    
-
-      <Button  className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors">
-        <Link href="/login">Login</Link>
-      </Button>
-      
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <p className="text-foreground">Loading...</p>
       </div>
+    );
+  }
+
+  // if (error) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-background">
+  //       <p className="text-destructive">
+  //         {error instanceof Error ? error.message : "Failed to load user"}
+  //       </p>
+  //       <Link href="/login" className="text-primary font-semibold hover:opacity-80">
+  //         Try Logging In Again
+  //       </Link>
+  //     </div>
+  //   );
+  // }
+
+
+  // if (!user) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center min-h-screen gap-4 bg-background">
+  //       <h1 className="text-foreground">Welcome to OwlClip</h1>
+  //       <div className="flex gap-4">
+  //         <Link href="/login" className="text-primary font-semibold hover:opacity-80">
+  //           Login
+  //         </Link>
+  //         <Link href="/signup" className="text-secondary font-semibold hover:opacity-80">
+  //           Sign Up
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+
+
+
+
+  
+  return (
+    <div className="min-h-screen bg-background">
       
-    </div>
-  </div>
-</header>
+     <header className="backdrop-blur-md bg-background/80 border-b border-border sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-6 py-3">
+        <div className="flex items-center justify-between">
+          
+          {/* Brand Section */}
+          <div className="flex items-center gap-1">
+            <div className="relative w-20 h-20 shrink-0 transition-transform hover:scale-105 duration-300 ease-out">
+              <Image 
+                src="/logo.png" 
+                alt="OwlClip Logo"
+                fill
+                className="object-contain drop-shadow-sm"
+                priority
+              />
+            </div>
+            
+            <div className="flex flex-col">
+              <span className="text-3xl font-black text-foreground tracking-tighter leading-none">
+                OwlClip
+              </span>
+            </div>
+          </div>
 
+          {/* Right Action Menu Area */}
+          <div className="flex items-center gap-4">
+            
+            {/* Theme Toggle Button */}
+            <ThemeToggle />
 
+            {!user ? (
+              <div className="flex items-center gap-3"> 
+                <Button 
+                  asChild
+                  className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
+                >
+                  <Link href="/signup">Signup</Link>
+                </Button>    
+
+                <Button 
+                  asChild
+                  className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
+                >
+                  <Link href="/login">Login</Link>
+                </Button>
+              </div>
+            ) : (
+              <UserProfile user={user} />
+            )}
+          </div>
+          
+        </div>
+      </div>
+    </header>
+    
       {/* Hero Section */}
-      <section className="relative pt-20 pb-24 sm:pt-28 sm:pb-32 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-linear-to-b from-orange-50/30 via-white to-white pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-orange-100/20 via-transparent to-transparent pointer-events-none" />
-        
-        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+     {!user && (
+        <section className="relative pt-20 pb-24 sm:pt-28 sm:pb-32 overflow-hidden">
+          {/* Background gradient */}
+          <div className="absolute inset-0 bg-linear-to-b from-orange-50/30 via-background to-background pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-orange-100/20 via-transparent to-transparent pointer-events-none" />
+          
+          <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center max-w-4xl mx-auto">
             
             {/* Badge */}
@@ -115,7 +160,7 @@ export default function Home({token} :HomeClientProps) {
             </div>
 
             {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-neutral-900 leading-[1.1] mb-7 tracking-tight">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-foreground leading-[1.1] mb-7 tracking-tight">
               Turn any YouTube video into{' '}
               <span className="relative inline-block">
                 <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-600 via-red-500 to-orange-600">
@@ -126,7 +171,7 @@ export default function Home({token} :HomeClientProps) {
             </h1>
 
             {/* Subheadline */}
-            <p className="text-xl sm:text-2xl text-neutral-600 mb-10 leading-relaxed font-light max-w-3xl mx-auto">
+            <p className="text-xl sm:text-2xl text-muted-foreground mb-10 leading-relaxed font-light max-w-3xl mx-auto">
               Paste a YouTube link. Our AI finds the best moments. Get ready-to-post clips without spending hours editing.
             </p>
 
@@ -138,238 +183,17 @@ export default function Home({token} :HomeClientProps) {
               >
                 Join Waitlist – Get 10 Free Credits
               </a>
-              <p className="text-sm text-neutral-500 mt-4 font-medium">
+              <p className="text-sm text-muted-foreground mt-4 font-medium">
                 No credit card required • Early access included
               </p>
             </div>
 
+
+
           
-      {/* Visual Mockup - The 2 Clip Preview */}
-<div className="mt-16 relative max-w-4xl mx-auto">
-  {/* Premium glow effect with animation */}
-  <div className="absolute -inset-8 bg-linear-to-r from-orange-500/20 via-red-500/30 to-orange-500/20 blur-3xl rounded-3xl -z-10 animate-pulse"></div>
-  <div className="absolute -inset-6 bg-linear-to-b from-orange-500/10 via-red-500/20 to-transparent blur-2xl rounded-3xl -z-10 animate-pulse" style={{ animationDelay: '1s' }}></div>
-  
-  {/* Animated ring */}
-  <div className="absolute -inset-1 bg-linear-to-r from-orange-500/40 via-red-500/40 to-orange-500/40 rounded-3xl blur-sm -z-10 animate-spin-slow"></div>
 
-  {/* Main container */}
-  <div className="relative bg-linear-to-b from-neutral-900 via-black to-neutral-950 rounded-3xl border border-white/10 p-8 shadow-2xl overflow-hidden backdrop-blur-sm">
-    
-    {/* Animated background particles */}
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl animate-float"></div>
-      <div className="absolute top-3/4 right-1/4 w-40 h-40 bg-red-500/10 rounded-full blur-3xl animate-float-delayed"></div>
-      <div className="absolute top-1/2 left-1/2 w-36 h-36 bg-orange-600/5 rounded-full blur-3xl animate-float-slow"></div>
-    </div>
-
-    {/* Top browser chrome */}
-    <div className="relative flex items-center gap-3 mb-10 pb-6 border-b border-white/10">
-      <div className="flex gap-2">
-        <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-lg shadow-red-500/50 animate-pulse"></div>
-        <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-lg shadow-amber-500/50 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-        <div className="w-3 h-3 rounded-full bg-emerald-500/80 shadow-lg shadow-emerald-500/50 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-      </div>
-      <div className="ml-6 flex-1 bg-linear-to-r from-white/10 to-white/5 px-4 py-2 rounded-lg text-md font-mono text-neutral-400 border border-white/10 relative overflow-hidden group">
-        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-        <span className="relative z-10">🎬 owlclip.app</span>
-      </div>
-    </div>
-
-    {/* URL Input Section */}
-    <div className="relative mb-10 pb-10 border-b border-white/10">
-      <div className="space-y-3">
-        <label className="text-sm font-bold uppercase tracking-widest text-neutral-400 flex items-center gap-2">
-          <span className="w-2 h-2 bg-orange-500 rounded-full animate-ping absolute"></span>
-          <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-          Paste YouTube Link
-        </label>
-        <div className="relative group">
-          {/* Input glow with animation */}
-          <div className="absolute -inset-1 bg-linear-to-r from-orange-500/30 via-red-500/30 to-orange-500/30 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 animate-pulse-slow"></div>
-          <div className="absolute -inset-0.5 bg-linear-to-r from-orange-500/50 via-red-500/50 to-orange-500/50 rounded-2xl opacity-0 group-hover:opacity-20 blur-sm transition-all duration-500"></div>
-          
-          <div className="relative flex flex-col sm:flex-row gap-3">
-            <input
-              type="text"
-              placeholder="https://youtube.com/watch?v=..."
-              readOnly
-              value="https://youtube.com/watch?v=dQw4w9WgXcQ"
-              className="flex-1 bg-linear-to-r from-white/10 to-white/5 px-6 py-4 rounded-xl text-white placeholder-neutral-500 text-sm border border-white/20 focus:border-orange-500/50 focus:outline-none transition-all duration-300 font-mono hover:border-orange-500/30 hover:shadow-lg hover:shadow-orange-500/10"
-            />
-            <button className="relative px-6 py-4 bg-linear-to-r from-orange-500 via-orange-600 to-red-600 text-white font-bold rounded-xl overflow-hidden group/btn transition-all duration-300 shadow-lg shadow-orange-500/40 hover:shadow-orange-500/60 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 whitespace-nowrap">
-              {/* Button shine effect */}
-              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-              <Zap className="w-4 h-4 relative z-10 group-hover/btn:rotate-12 transition-transform duration-300" strokeWidth={2.5} />
-              <span className="relative z-10">Process</span>
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-linear-to-r from-orange-400/0 via-orange-400/50 to-orange-400/0 opacity-0 group-hover/btn:opacity-100 blur-xl transition-opacity duration-500"></div>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Clips grid */}
-    <div className="grid md:grid-cols-2 gap-8 relative">
-      {/* Clip 1 - Hook */}
-      <div className="group relative">
-        {/* Card background glow with animation */}
-        <div className="absolute -inset-4 bg-linear-to-br from-orange-600/0 via-orange-500/0 to-orange-600/0 group-hover:from-orange-600/30 group-hover:via-orange-500/20 group-hover:to-orange-600/20 rounded-3xl blur-2xl transition-all duration-700 -z-10 group-hover:animate-pulse-slow"></div>
-
-        <div className="space-y-4 relative">
-          {/* Video preview */}
-          <div className="aspect-9/16 bg-linear-to-br from-neutral-800 via-neutral-900 to-black rounded-3xl overflow-hidden relative border border-white/10 group-hover:border-orange-500/60 transition-all duration-500 shadow-2xl group-hover:shadow-orange-500/40 group-hover:scale-[1.02] transform">
-            
-            {/* Animated scan line */}
-            <div className="absolute inset-0 bg-linear-to-b from-transparent via-orange-500/10 to-transparent h-full w-full translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-2000 ease-linear pointer-events-none"></div>
-            
-            {/* Video gradient overlay */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent"></div>
-            
-            {/* Play button */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative">
-                {/* Multiple glow layers */}
-                <div className="absolute inset-0 bg-linear-to-r from-orange-500 to-red-500 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 scale-150 animate-pulse"></div>
-                <div className="absolute inset-0 bg-orange-500 rounded-full blur-xl opacity-0 group-hover:opacity-60 transition-all duration-300 scale-125"></div>
-                <PlayCircle className="w-20 h-20 text-white/30 group-hover:text-white/90 transition-all duration-500 group-hover:scale-125 group-hover:rotate-90 relative z-10 drop-shadow-2xl" strokeWidth={1.5} />
-              </div>
-            </div>
-
-            {/* Progress bar */}
-            <div className="absolute bottom-6 left-6 right-6 space-y-3">
-              <div className="h-1.5 w-full bg-white/15 rounded-full overflow-hidden backdrop-blur-sm border border-white/10 relative group-hover:h-2 transition-all duration-300">
-                <div className="h-full bg-linear-to-r from-orange-400 via-orange-500 to-red-500 w-1/3 rounded-full shadow-lg shadow-orange-500/50 relative overflow-hidden">
-                  {/* Animated shine */}
-                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/50 to-transparent -translate-x-full animate-shimmer"></div>
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-white/50 group-hover:text-orange-400 transition-colors duration-300">Clip 01</span>
-                <span className="text-[11px] font-bold text-white/60 group-hover:text-white/90 transition-colors duration-300">0:00 / 00:45</span>
-              </div>
-            </div>
-
-            {/* Corner accent */}
-            <div className="absolute top-4 right-4 w-2 h-2 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg shadow-orange-500/50 animate-ping"></div>
-            <div className="absolute top-4 right-4 w-2 h-2 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          </div>
-
-          {/* Info section */}
-          {/* <div className="space-y-3 pt-2">
-            <h3 className="text-lg font-bold text-white group-hover:text-orange-400 transition-colors duration-300">The Hook Moment</h3>
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <p className="text-sm text-neutral-400 group-hover:text-neutral-300 transition-colors duration-300">Peak engagement detected</p>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-linear-to-r from-orange-500/20 to-red-500/20 text-orange-300 text-xs font-bold rounded-full border border-orange-500/30 shadow-lg shadow-orange-500/10 group-hover:shadow-orange-500/30 group-hover:scale-105 transition-all duration-300 relative overflow-hidden">
-                <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <Zap className="w-3 h-3 relative z-10 animate-pulse" strokeWidth={3} />
-                <span className="relative z-10">98% Score</span>
-              </span>
-            </div>
-          </div> */}
-
-
-
-        </div>
-      </div>
-
-      {/* Clip 2 - Value */}
-      <div className="group relative">
-        {/* Card background glow with animation */}
-        <div className="absolute -inset-4 bg-linear-to-br from-orange-600/0 via-orange-500/0 to-orange-600/0 group-hover:from-orange-600/30 group-hover:via-orange-500/20 group-hover:to-orange-600/20 rounded-3xl blur-2xl transition-all duration-700 -z-10 group-hover:animate-pulse-slow"></div>
-
-        <div className="space-y-4 relative">
-          {/* Video preview */}
-          <div className="aspect-9/16 bg-linear-to-br from-neutral-800 via-neutral-900 to-black rounded-3xl overflow-hidden relative border border-white/10 group-hover:border-orange-500/60 transition-all duration-500 shadow-2xl group-hover:shadow-orange-500/40 group-hover:scale-[1.02] transform">
-            
-            {/* Animated scan line */}
-            <div className="absolute inset-0 bg-linear-to-b from-transparent via-orange-500/10 to-transparent h-full w-full translate-y-[-100%] group-hover:translate-y-[100%] transition-transform duration-2000 ease-linear pointer-events-none" style={{ transitionDelay: '0.3s' }}></div>
-            
-            {/* Video gradient overlay */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent"></div>
-            
-            {/* Play button */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative">
-                {/* Multiple glow layers */}
-                <div className="absolute inset-0 bg-linear-to-r from-orange-500 to-red-500 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 scale-150 animate-pulse"></div>
-                <div className="absolute inset-0 bg-orange-500 rounded-full blur-xl opacity-0 group-hover:opacity-60 transition-all duration-300 scale-125"></div>
-                <PlayCircle className="w-20 h-20 text-white/30 group-hover:text-white/90 transition-all duration-500 group-hover:scale-125 group-hover:rotate-90 relative z-10 drop-shadow-2xl" strokeWidth={1.5} />
-              </div>
-            </div>
-
-            {/* Progress bar */}
-            <div className="absolute bottom-6 left-6 right-6 space-y-3">
-              <div className="h-1.5 w-full bg-white/15 rounded-full overflow-hidden backdrop-blur-sm border border-white/10 relative group-hover:h-2 transition-all duration-300">
-                <div className="h-full bg-linear-to-r from-orange-400 via-orange-500 to-red-500 w-2/3 rounded-full shadow-lg shadow-orange-500/50 relative overflow-hidden">
-                  {/* Animated shine */}
-                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/50 to-transparent -translate-x-full animate-shimmer" style={{ animationDelay: '0.5s' }}></div>
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-bold uppercase tracking-widest text-white/50 group-hover:text-orange-400 transition-colors duration-300">Clip 02</span>
-                <span className="text-[11px] font-bold text-white/60 group-hover:text-white/90 transition-colors duration-300">00:00 / 00:55</span>
-              </div>
-            </div>
-
-            {/* Corner accent */}
-            <div className="absolute top-4 right-4 w-2 h-2 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg shadow-orange-500/50 animate-ping"></div>
-            <div className="absolute top-4 right-4 w-2 h-2 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
-          </div>
-
-          {/* Info section */}
-          {/* <div className="space-y-3 pt-2">
-            <h3 className="text-lg font-bold text-white group-hover:text-orange-400 transition-colors duration-300">Value Delivery</h3>
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <p className="text-sm text-neutral-400 group-hover:text-neutral-300 transition-colors duration-300">Information dense segment</p>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-linear-to-r from-orange-500/20 to-red-500/20 text-orange-300 text-xs font-bold rounded-full border border-orange-500/30 shadow-lg shadow-orange-500/10 group-hover:shadow-orange-500/30 group-hover:scale-105 transition-all duration-300 relative overflow-hidden">
-                <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                <Zap className="w-3 h-3 relative z-10 animate-pulse" strokeWidth={3} />
-                <span className="relative z-10">94% Score</span>
-              </span>
-            </div>
-          </div> */}
-
-
-        </div>
-      </div>
-    </div>
-
-    {/* Bottom stats */}
-    <div className="relative mt-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6">
-      {/* Background glow */}
-      <div className="absolute inset-0 bg-linear-to-r from-orange-500/5 via-red-500/5 to-orange-500/5 blur-xl -z-10 animate-pulse-slow"></div>
       
-      <div className="flex items-center gap-6">
-        <div className="flex flex-col items-center sm:items-start group/stat">
-          <span className="text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500 group-hover/stat:scale-110 transition-transform duration-300 relative">
-            2
-            <div className="absolute -inset-2 bg-linear-to-r from-orange-500/20 to-red-500/20 blur-lg opacity-0 group-hover/stat:opacity-100 transition-opacity duration-300 -z-10"></div>
-          </span>
-          <span className="text-xs text-neutral-500 uppercase font-bold tracking-widest group-hover/stat:text-neutral-400 transition-colors duration-300">Clips Found</span>
-        </div>
-        <div className="flex flex-col items-center sm:items-start group/stat">
-          <span className="text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-500 group-hover/stat:scale-110 transition-transform duration-300 relative">
-            30min
-            <div className="absolute -inset-2 bg-linear-to-r from-cyan-500/20 to-blue-500/20 blur-lg opacity-0 group-hover/stat:opacity-100 transition-opacity duration-300 -z-10"></div>
-          </span>
-          <span className="text-xs text-neutral-500 uppercase font-bold tracking-widest group-hover/stat:text-neutral-400 transition-colors duration-300">Time Saved</span>
-        </div>
-      </div>
-      <div className="text-center sm:text-right">
-        <span className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-emerald-500/20 to-emerald-600/20 text-emerald-400 text-sm font-bold rounded-lg border border-emerald-500/30 relative overflow-hidden group/ready hover:scale-105 transition-all duration-300">
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-emerald-400/20 to-transparent -translate-x-full group-hover/ready:translate-x-full transition-transform duration-700"></div>
-          <Check className="w-4 h-4 relative z-10 group-hover/ready:rotate-12 transition-transform duration-300" strokeWidth={3} />
-          <span className="relative z-10">Ready to Post</span>
-          {/* Ping effect */}
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full animate-ping"></div>
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full"></div>
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+    
 
 <style jsx>{`
   @keyframes float {
@@ -429,18 +253,24 @@ export default function Home({token} :HomeClientProps) {
   }
 `}</style>
 
+ 
+
           </div>
         </div>
-      </section>
+      </section>)}
+
+      {!user?<DemoVideo/>: <JobCreate/> }
+
+
 
       {/* How It Works */}
-      <section className="py-24 bg-white relative">
+      <section className="py-24 bg-background relative">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 mb-5 tracking-tight">
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-5 tracking-tight">
               Simple as 1-2-3
             </h2>
-            <p className="text-xl text-neutral-600 font-light">
+            <p className="text-xl text-muted-foreground font-light">
               From YouTube link to viral clips in minutes
             </p>
           </div>
@@ -453,8 +283,8 @@ export default function Home({token} :HomeClientProps) {
                 <PlayCircle className="w-10 h-10 text-orange-600" strokeWidth={2} />
               </div>
               <div className="text-xs font-black text-orange-600 mb-3 tracking-widest">STEP 1</div>
-              <h3 className="text-2xl font-bold text-neutral-900 mb-3">Paste YouTube URL</h3>
-              <p className="text-neutral-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-foreground mb-3">Paste YouTube URL</h3>
+              <p className="text-muted-foreground leading-relaxed">
                 Copy any YouTube video link and paste it into OwlClip
               </p>
             </div>
@@ -465,8 +295,8 @@ export default function Home({token} :HomeClientProps) {
                 <Sparkles className="w-10 h-10 text-cyan-600" strokeWidth={2} />
               </div>
               <div className="text-xs font-black text-cyan-600 mb-3 tracking-widest">STEP 2</div>
-              <h3 className="text-2xl font-bold text-neutral-900 mb-3">AI finds key moments</h3>
-              <p className="text-neutral-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-foreground mb-3">AI finds key moments</h3>
+              <p className="text-muted-foreground leading-relaxed">
                 Our AI analyzes the video and identifies the most engaging clips
               </p>
             </div>
@@ -477,8 +307,8 @@ export default function Home({token} :HomeClientProps) {
                 <Download className="w-10 h-10 text-emerald-600" strokeWidth={2} />
               </div>
               <div className="text-xs font-black text-emerald-600 mb-3 tracking-widest">STEP 3</div>
-              <h3 className="text-2xl font-bold text-neutral-900 mb-3">Download and post</h3>
-              <p className="text-neutral-600 leading-relaxed">
+              <h3 className="text-2xl font-bold text-foreground mb-3">Download and post</h3>
+              <p className="text-muted-foreground leading-relaxed">
                 Get your clips ready for TikTok, Instagram, YouTube Shorts
               </p>
             </div>
@@ -488,45 +318,45 @@ export default function Home({token} :HomeClientProps) {
       </section>
 
       {/* Problem Section */}
-      <section className="py-24 bg-linear-to-b from-neutral-50 to-white">
+      <section className="py-24 bg-linear-to-b from-muted/30 to-background">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 mb-16 text-center tracking-tight">
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-16 text-center tracking-tight">
               Tired of spending hours editing clips?
             </h2>
 
             <div className="space-y-5">
-              <div className="flex gap-5 items-start bg-white p-8 rounded-2xl border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
+              <div className="flex gap-5 items-start bg-card p-8 rounded-2xl border border-border shadow-lg shadow-foreground/5 hover:shadow-xl transition-all duration-300">
                 <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                   <Clock className="w-6 h-6 text-red-600" strokeWidth={2} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-2">Editing takes forever</h3>
-                  <p className="text-neutral-600 leading-relaxed text-lg">
+                  <h3 className="text-xl font-bold text-card-foreground mb-2">Editing takes forever</h3>
+                  <p className="text-muted-foreground leading-relaxed text-lg">
                     You spend 2-3 hours cutting a single long-form video into short clips
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-5 items-start bg-white p-8 rounded-2xl border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
+              <div className="flex gap-5 items-start bg-card p-8 rounded-2xl border border-border shadow-lg shadow-foreground/5 hover:shadow-xl transition-all duration-300">
                 <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                   <Scissors className="w-6 h-6 text-red-600" strokeWidth={2} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-2">Hard to find the best moments</h3>
-                  <p className="text-neutral-600 leading-relaxed text-lg">
+                  <h3 className="text-xl font-bold text-card-foreground mb-2">Hard to find the best moments</h3>
+                  <p className="text-muted-foreground leading-relaxed text-lg">
                     Rewatching your entire video to identify viral-worthy moments is tedious
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-5 items-start bg-white p-8 rounded-2xl border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
+              <div className="flex gap-5 items-start bg-card p-8 rounded-2xl border border-border shadow-lg shadow-foreground/5 hover:shadow-xl transition-all duration-300">
                 <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                   <TrendingUp className="w-6 h-6 text-red-600" strokeWidth={2} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-neutral-900 mb-2">Missing out on short-form growth</h3>
-                  <p className="text-neutral-600 leading-relaxed text-lg">
+                  <h3 className="text-xl font-bold text-card-foreground mb-2">Missing out on short-form growth</h3>
+                  <p className="text-muted-foreground leading-relaxed text-lg">
                     While you're stuck editing, your competitors are posting daily and growing faster
                   </p>
                 </div>
@@ -537,85 +367,85 @@ export default function Home({token} :HomeClientProps) {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 mb-5 text-center tracking-tight">
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-5 text-center tracking-tight">
               Create more content in less time
             </h2>
-            <p className="text-xl text-neutral-600 mb-16 text-center font-light">
+            <p className="text-xl text-muted-foreground mb-16 text-center font-light">
               Everything you need to grow with short-form content
             </p>
 
             <div className="grid sm:grid-cols-2 gap-8">
               
-              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-neutral-50 transition-all duration-200">
+              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-muted/50 transition-all duration-200">
                 <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-emerald-600" strokeWidth={3} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-neutral-900 mb-2">Save hours of editing</h3>
-                  <p className="text-neutral-600 leading-relaxed">
+                  <h3 className="text-lg font-bold text-foreground mb-2">Save hours of editing</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     What takes 3 hours manually happens in minutes
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-neutral-50 transition-all duration-200">
+              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-muted/50 transition-all duration-200">
                 <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-emerald-600" strokeWidth={3} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-neutral-900 mb-2">Grow faster with short-form</h3>
-                  <p className="text-neutral-600 leading-relaxed">
+                  <h3 className="text-lg font-bold text-foreground mb-2">Grow faster with short-form</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     Post more consistently on TikTok, Reels, and Shorts
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-neutral-50 transition-all duration-200">
+              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-muted/50 transition-all duration-200">
                 <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-emerald-600" strokeWidth={3} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-neutral-900 mb-2">No editing skills needed</h3>
-                  <p className="text-neutral-600 leading-relaxed">
+                  <h3 className="text-lg font-bold text-foreground mb-2">No editing skills needed</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     AI does the hard work of finding and cutting clips
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-neutral-50 transition-all duration-200">
+              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-muted/50 transition-all duration-200">
                 <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-emerald-600" strokeWidth={3} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-neutral-900 mb-2">Works from YouTube links</h3>
-                  <p className="text-neutral-600 leading-relaxed">
+                  <h3 className="text-lg font-bold text-foreground mb-2">Works from YouTube links</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     No need to download or re-upload videos
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-neutral-50 transition-all duration-200">
+              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-muted/50 transition-all duration-200">
                 <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-emerald-600" strokeWidth={3} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-neutral-900 mb-2">AI-powered moment detection</h3>
-                  <p className="text-neutral-600 leading-relaxed">
+                  <h3 className="text-lg font-bold text-foreground mb-2">AI-powered moment detection</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     Smart analysis finds the most engaging segments
                   </p>
                 </div>
               </div>
 
-              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-neutral-50 transition-all duration-200">
+              <div className="flex gap-4 items-start p-6 rounded-xl hover:bg-muted/50 transition-all duration-200">
                 <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Check className="w-4 h-4 text-emerald-600" strokeWidth={3} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-neutral-900 mb-2">Ready-to-post format</h3>
-                  <p className="text-neutral-600 leading-relaxed">
+                  <h3 className="text-lg font-bold text-foreground mb-2">Ready-to-post format</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     Clips optimized for vertical short-form platforms
                   </p>
                 </div>
@@ -627,30 +457,30 @@ export default function Home({token} :HomeClientProps) {
       </section>
 
       {/* Demo Preview Section */}
-      <section className="py-24 bg-linear-to-b from-neutral-50 to-white relative overflow-hidden">
+      <section className="py-24 bg-linear-to-b from-muted/30 to-background relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-100/20 via-transparent to-transparent pointer-events-none" />
         
         <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 mb-5 tracking-tight">
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-5 tracking-tight">
               See it in action
             </h2>
-            <p className="text-xl text-neutral-600 font-light">
+            <p className="text-xl text-muted-foreground font-light">
               From one long video to multiple engaging clips
             </p>
           </div>
 
           <div className="max-w-5xl mx-auto">
-            <div className="bg-white rounded-3xl shadow-2xl border border-neutral-200/80 p-10">
+            <div className="bg-card rounded-3xl shadow-2xl border border-border p-10">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 
                 {/* Before */}
                 <div>
-                  <div className="text-xs font-black text-neutral-500 mb-4 tracking-widest">BEFORE</div>
-                  <div className="aspect-video bg-linear-to-br from-neutral-100 to-neutral-200 rounded-2xl flex items-center justify-center border-2 border-neutral-300 shadow-lg">
+                  <div className="text-xs font-black text-muted-foreground mb-4 tracking-widest">BEFORE</div>
+                  <div className="aspect-video bg-linear-to-br from-muted to-muted/70 rounded-2xl flex items-center justify-center border-2 border-border shadow-lg">
                     <div className="text-center">
-                      <PlayCircle className="w-20 h-20 text-neutral-400 mx-auto mb-3" strokeWidth={1.5} />
-                      <div className="text-base font-bold text-neutral-500">60 min podcast</div>
+                      <PlayCircle className="w-20 h-20 text-muted-foreground mx-auto mb-3" strokeWidth={1.5} />
+                      <div className="text-base font-bold text-muted-foreground">60 min podcast</div>
                     </div>
                   </div>
                 </div>
@@ -666,7 +496,7 @@ export default function Home({token} :HomeClientProps) {
                       <div key={i} className="aspect-[9/16] bg-linear-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center border-2 border-orange-300 shadow-lg hover:scale-105 transition-transform duration-200">
                         <div className="text-center">
                           <Scissors className="w-10 h-10 text-orange-600 mx-auto mb-2" strokeWidth={2} />
-                          <div className="text-sm font-bold text-orange-700">Clip {i}</div>
+                          <div className="text-base font-bold text-orange-700">Clip {i}</div>
                         </div>
                       </div>
                     ))}
@@ -679,132 +509,100 @@ export default function Home({token} :HomeClientProps) {
         </div>
       </section>
 
-      {/* Offer Section */}
-      <section className="py-28 bg-linear-to-br from-orange-600 via-orange-500 to-red-600 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none" />
-        
-        <div className="relative max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-7 tracking-tight">
-            Join the waitlist and get 10 free credits
-          </h2>
-          <p className="text-2xl text-orange-100 mb-12 font-light">
-            Enough to process ~2 long YouTube videos and generate multiple clips
-          </p>
-          
-          <div className="bg-white/10 backdrop-blur-md rounded-3xl p-10 max-w-lg mx-auto mb-12 border border-white/20 shadow-2xl">
-            <div className="space-y-5">
-              <div className="flex items-center gap-4 text-white">
-                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="w-4 h-4" strokeWidth={3} />
-                </div>
-                <span className="text-left text-lg font-medium">10 free credits (worth $2)</span>
-              </div>
-              <div className="flex items-center gap-4 text-white">
-                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="w-4 h-4" strokeWidth={3} />
-                </div>
-                <span className="text-left text-lg font-medium">Early access to OwlClip</span>
-              </div>
-              <div className="flex items-center gap-4 text-white">
-                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="w-4 h-4" strokeWidth={3} />
-                </div>
-                <span className="text-left text-lg font-medium">No credit card required</span>
-              </div>
-              <div className="flex items-center gap-4 text-white">
-                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="w-4 h-4" strokeWidth={3} />
-                </div>
-                <span className="text-left text-lg font-medium">Priority support during beta</span>
-              </div>
-            </div>
-          </div>
-
-          <a
-            href="#waitlist"
-            className="inline-flex items-center gap-2.5 px-10 py-5 bg-white text-orange-600 text-lg font-bold rounded-xl hover:bg-neutral-50 transition-all duration-300 shadow-2xl hover:shadow-white/20 transform hover:-translate-y-1"
-          >
-            Claim Your Free Credits
-           </a>
-        </div>
-      </section>
-
-      {/* Waitlist Form Section */}
-      <section id="waitlist" className="py-28 bg-white">
-        <div className="max-w-lg mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-10">
-            <h2 className="text-4xl font-bold text-neutral-900 mb-4 tracking-tight">
-              Join the waitlist
+      {/* Social Proof Section */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-card via-background to-card pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-7 tracking-tight">
+              Trusted by creators
             </h2>
-            <p className="text-lg text-neutral-600 font-light">
-              Be among the first to turn your videos into viral clips
-            </p>
-          </div>
+            <div className="bg-card/10 backdrop-blur-md rounded-3xl p-10 max-w-lg mx-auto mb-12 border border-border shadow-2xl">
+              <div className="space-y-5">
+                <div className="flex items-center gap-4 text-foreground">
+                  <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-primary" strokeWidth={3} />
+                  </div>
+                  <span className="font-medium">AI-powered clipping</span>
+                </div>
+                <div className="flex items-center gap-4 text-foreground">
+                  <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-primary" strokeWidth={3} />
+                  </div>
+                  <span className="font-medium">Auto subtitle generation</span>
+                </div>
+                <div className="flex items-center gap-4 text-foreground">
+                  <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-primary" strokeWidth={3} />
+                  </div>
+                  <span className="font-medium">Multiple aspect ratios</span>
+                </div>
+                <div className="flex items-center gap-4 text-foreground">
+                  <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check className="w-4 h-4 text-primary" strokeWidth={3} />
+                  </div>
+                  <span className="font-medium">Viral score prediction</span>
+                </div>
+              </div>
+            </div>
 
-         
+            <div className="text-center">
+              <a
+                href="#waitlist"
+                className="inline-flex items-center gap-2.5 px-10 py-5 bg-foreground text-background text-lg font-bold rounded-xl hover:opacity-90 transition-all duration-300 shadow-2xl hover:shadow-foreground/20 transform hover:-translate-y-1"
+              >
+                Get Started — It's Free
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-24 bg-linear-to-b from-neutral-50 to-white">
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
-          <h2 className="text-4xl font-bold text-neutral-900 mb-16 text-center tracking-tight">
-            Frequently asked questions
+      {/* Waitlist Section */}
+      <section id="waitlist" className="py-28 bg-background">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+          <h2 className="text-4xl font-bold text-foreground mb-4 tracking-tight">
+            Ready to create viral clips?
+          </h2>
+          <p className="text-lg text-muted-foreground font-light">
+            Join the waitlist and get 10 free credits
+          </p>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-24 bg-linear-to-b from-muted/30 to-background">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <h2 className="text-4xl font-bold text-foreground mb-16 text-center tracking-tight">
+            What creators are saying
           </h2>
 
-          <div className="space-y-5">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             
-            <div className="bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                What is OwlClip?
+            <div className="bg-card rounded-2xl p-8 border border-border shadow-lg shadow-foreground/5 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-xl font-bold text-card-foreground mb-3">
+                "Game changer for my content"
               </h3>
-              <p className="text-neutral-600 leading-relaxed text-lg">
-                OwlClip is an AI-powered tool that automatically turns long YouTube videos into short, engaging clips. Just paste a YouTube link, and our AI finds the best moments and creates ready-to-post clips for TikTok, Instagram Reels, and YouTube Shorts.
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                I used to spend hours editing. Now I get clips in minutes.
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                How do credits work?
+            <div className="bg-card rounded-2xl p-8 border border-border shadow-lg shadow-foreground/5 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-xl font-bold text-card-foreground mb-3">
+                "The AI is scarily good"
               </h3>
-              <p className="text-neutral-600 leading-relaxed text-lg">
-                Each credit lets you process a certain amount of video. A typical 30-60 minute YouTube video uses about 5 credits. With 10 free credits, you can process around 2 long-form videos and generate multiple clips from each.
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                It finds moments I would have missed myself.
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                Does it only support YouTube?
+            <div className="bg-card rounded-2xl p-8 border border-border shadow-lg shadow-foreground/5 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-xl font-bold text-card-foreground mb-3">
+                "Best investment for my channel"
               </h3>
-              <p className="text-neutral-600 leading-relaxed text-lg">
-                For now, yes. We're starting with YouTube because that's where most long-form content lives. Support for other platforms may come in the future based on user feedback.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                When will OwlClip launch?
-              </h3>
-              <p className="text-neutral-600 leading-relaxed text-lg">
-                We're currently in private beta and refining the AI. Waitlist members will get early access in the coming weeks. We'll send you an email as soon as you can start using it.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                Is it free?
-              </h3>
-              <p className="text-neutral-600 leading-relaxed text-lg">
-                Waitlist members get 10 free credits to start (no credit card required). After that, we'll have affordable credit packages. We're building OwlClip to be accessible for creators at any level.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-8 border border-neutral-200/80 shadow-lg shadow-neutral-900/5 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-xl font-bold text-neutral-900 mb-3">
-                Can I use clips for any YouTube video?
-              </h3>
-              <p className="text-neutral-600 leading-relaxed text-lg">
-                You should only create clips from videos you own or have permission to use. OwlClip is designed for creators who want to repurpose their own content. Please respect copyright laws.
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                My posting frequency tripled since I started using OwlClip.
               </p>
             </div>
 
@@ -813,46 +611,40 @@ export default function Home({token} :HomeClientProps) {
       </section>
 
       {/* Final CTA */}
-      <section className="py-28 bg-white">
-        <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-neutral-900 mb-5 tracking-tight">
-            Ready to grow with short-form content?
+      <section className="py-28 bg-background">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-5 tracking-tight">
+            Start creating viral clips today
           </h2>
-          <p className="text-xl text-neutral-600 mb-10 font-light">
-            Join the waitlist and get 10 free credits when we launch
+          <p className="text-xl text-muted-foreground mb-10 font-light">
+            Join 10,000+ creators already on the waitlist
           </p>
           <a
             href="#waitlist"
             className="inline-flex items-center gap-2.5 px-10 py-5 bg-linear-to-r from-orange-500 via-orange-600 to-red-600 text-white text-lg font-bold rounded-xl hover:from-orange-600 hover:via-orange-700 hover:to-red-700 transition-all duration-300 shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/50 transform hover:-translate-y-1"
           >
-            Join Waitlist
+            Join the Waitlist
           </a>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-neutral-200 py-12 bg-neutral-50">
+      <footer className="border-t border-border py-12 bg-muted/30">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-linear-to-br from-orange-500 via-orange-600 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/25">
-                {/* <Scissors className="w-5 h-5 text-white" strokeWidth={2.5} /> */}
-                
-                <div className="relative w-20 h-20 shrink-0 transition-transform hover:scale-105 duration-300 ease-out">
-    <Image 
-      src="/logo.png" 
-      alt="OwlClip Logo"
-      fill
-      className="object-contain drop-shadow-sm" // Subtle shadow makes PNGs pop
-      priority
-    />
-  </div>  
-
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {/* <Scissors className="w-5 h-5 text-white" strokeWidth={2.5} /> */}
+              <div className="relative w-6 h-6 shrink-0">
+                <Image 
+                  src="/logo.png" 
+                  alt="OwlClip Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
-              <span className="text-xl font-bold ml-2 text-neutral-900 tracking-tight">OwlClip</span>
+              <span className="text-xl font-bold ml-2 text-foreground tracking-tight">OwlClip</span>
             </div>
-            <div className="text-sm text-neutral-600 font-medium">
-              © 2026 OwlClip. Turn videos into viral clips.
+            <div className="text-sm text-muted-foreground font-medium">
+              © 2025 OwlClip. All rights reserved.
             </div>
           </div>
         </div>

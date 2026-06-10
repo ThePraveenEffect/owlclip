@@ -7,7 +7,7 @@
 
 import {cookies} from 'next/headers';
 import setCookieParser from 'set-cookie-parser';
-import { LoginFormData, LoginSchema } from '@/src/schemas/auth.schema';
+import { LoginFormData, LoginSchema } from '@/schemas/auth.schema';
 
 
 export async function loginAction(data:LoginFormData){

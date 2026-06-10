@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request,status
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
-from fastapi import status
+from fastapi.responses import JSONResponse  
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from app.middleware.ratelimiter import limiter
 from contextlib import asynccontextmanager
 from app.routers.v1 import v1_router
 from app.core.database import engine, Base, AsyncSessionLocal
@@ -116,14 +118,25 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-app.add_middleware(AuthMiddleware)            
+# State registration required by Slowapi internally
+app.state.limiter = limiter
+
+# Tell FastAPI to return a 429 error automatically when limits are hit
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+          
+
+app.add_middleware(AuthMiddleware)
+                                         
 app.add_middleware(
     CORSMiddleware, 
     allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True, 
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization"],
-)                                              # Add LAST = runs FIRST
+    expose_headers=["*"]
+)    
+
 
 app.include_router(v1_router)
 

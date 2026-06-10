@@ -8,11 +8,11 @@ export function proxy(req:NextRequest){
     
 
     if(req.nextUrl.pathname.startsWith('/dashboard')){
-        if(!accessToken && !refreshToken){
-            return NextResponse.redirect(new URL('/login', req.url));
-        }
+        // if(!accessToken && !refreshToken){
+        //     return NextResponse.redirect(new URL('/login', req.url));
+        // }
         
-        if(!accessToken&& refreshToken){
+        if(!accessToken && refreshToken){
            return NextResponse.redirect(
             new URL('api/v1/auth/refresh', req.url)
        );

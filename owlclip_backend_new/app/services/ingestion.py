@@ -98,7 +98,7 @@ async def ingestion_pipeline(job_id: str):
 
                 # Step 6: Cut Audio Segments
                 audio_clips = await cut_audio_segments(wav_path, selected_segments)
-
+ 
                 # Step 7: Transcribe segments
                 audio_clips = await transcribe_audio_clips(audio_clips)
 

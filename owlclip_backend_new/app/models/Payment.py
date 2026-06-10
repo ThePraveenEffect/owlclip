@@ -56,6 +56,16 @@ class Payment(Base):
         nullable=True,
     )
 
+    credits_to_add = Column(
+       Integer,
+       nullable=False
+    )
+
+    processed_at = Column(
+        DateTime,
+        nullable=True
+    )
+
 
     notes = Column(
         JSON,

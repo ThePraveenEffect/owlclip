@@ -18,7 +18,25 @@ class User(Base):
 
     # Profile fields
     full_name = Column(String(80), nullable=True)
+    avatar_url = Column(String(255), nullable=True , default="https://api.dicebear.com/10.x/bottts/svg?seed=Felix")  
     
+    credits_remaining = Column(Integer, nullable=False, default=0) #nullable false means The column cannot be empty.
+    credits_expires_at = Column(
+       DateTime(timezone=True),
+       nullable=True
+     )
+
+    subscription_status = Column(
+        String(50),
+        nullable=False,
+        default="inactive"
+    )
+
+    subscription_expires_at = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
     # Status fields
     is_active = Column(Boolean, default=True, index=True)
     is_verified = Column(Boolean, default=False)  # Email verification status
