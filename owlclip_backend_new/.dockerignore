@@ -1,0 +1,25 @@
+# 📦 Python Virtual Environments (We build a clean one inside the container)
+.venv/
+venv/
+ENV/
+env/
+
+# 🗑️ Python Execution Cache (Speeds up local runs, but causes conflicts inside Docker)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 🛑 Git & Security (NEVER copy your secrets or git logs into the image)
+.git/
+.gitignore
+.env
+.env.*
+
+# 💻 System & IDE Garbage
+.vscode/
+.idea/
+.DS_Store

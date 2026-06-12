@@ -1,0 +1,23 @@
+services:
+  fastapi-app:
+    # Build Configuration
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # Name of the resulting frozen image
+    image: fastapi-app:1.0
+
+    # Container naming for easy tracking via 'docker ps'
+    container_name: owlclip_backend_server
+
+    # Port Mapping (Host Port : Container Port)
+    ports:
+      - "8000:8000"
+
+    # Industry standard: inject variables from a secure file
+    env_file:
+      - .env
+      
+    # Restart Policy: Auto-boots up if the app crashes unexpectedly
+    restart: unless-stopped
