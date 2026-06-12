@@ -48,7 +48,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             )
         
         payload = decode_token(token)
-        print("payload here!fds")
+        print("payload here!")
         if not payload:
             logger.warning(f"Invalid/expired token for: {path}")
             # ✅ FIX: Return JSONResponse instead of raising HTTPException
