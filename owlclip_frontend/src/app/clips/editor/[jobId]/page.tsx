@@ -32,7 +32,7 @@ export default function EditorPage() {
      
      <ClipEditor clip={clip} jobId={jobId}/>
    
-   
+    
    
     </div>
   );

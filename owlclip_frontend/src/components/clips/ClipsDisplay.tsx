@@ -253,11 +253,11 @@ export function ClipsDisplay({ job, jobId }: any) {
 
           </div>
 
-          {editingClip && (
+          {/* {editingClip && (
             <div className="mt-8">
               <ClipEditor />
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>
