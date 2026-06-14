@@ -37,7 +37,7 @@ export function JobCreate() {
         setSuccessMessage(null);
 
         try {
-            const response = await apiClient("/api/v1/upload", {
+            const response = await apiClient("/v1/upload", {
                 method: "POST",
                 body: JSON.stringify(data),
             });

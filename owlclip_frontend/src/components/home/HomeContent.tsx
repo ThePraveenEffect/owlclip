@@ -40,8 +40,9 @@ export default function Home() {
     isLoading,
     error
   } = useAuth();
-
-   console.log(user)
+console.log("auth error:", error);
+console.log("isLoading:", isLoading);
+   console.log("working",user)
 
  if (isLoading) {
     return (

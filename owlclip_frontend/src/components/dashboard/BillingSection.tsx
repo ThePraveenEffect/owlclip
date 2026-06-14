@@ -2,7 +2,6 @@
 
 import { Check, Sparkles, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {env} from '@/config/env'
 import axios from 'axios'
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -88,7 +87,7 @@ export default function BillingSection() {
 
 
   const verifyUserPayment = async()=>{
-    const res = await axios.get(env.BASE_URL+"/api/v1/payment/verify",
+    const res = await axios.get("/api/v1/payment/verify",
       {withCredentials:true}
     );
 
@@ -100,7 +99,7 @@ export default function BillingSection() {
 
 
   const handleBuyClick = async(type)=>{
-   const order = await axios.post(env.BASE_URL+"/api/v1/payment/create",
+   const order = await axios.post("/api/v1/payment/create",
     {
       tier: type,
     },{withCredentials:true}

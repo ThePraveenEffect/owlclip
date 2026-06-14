@@ -1,4 +1,5 @@
 export const env = {
-    BASE_URL: process.env.NEXT_PUBLIC_BACKEND_URL!,
-    
+    // Points to Next.js own /api routes (same-origin), which proxy to the backend.
+    // This keeps cookies on the frontend domain — browser sends them automatically.
+    BASE_URL: "/api",
 }

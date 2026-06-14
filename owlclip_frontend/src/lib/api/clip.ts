@@ -1,7 +1,7 @@
 import { apiClient } from './client';
 
 export async function getClip(jobId: string) {
-  return apiClient(`/api/v1/clips/${jobId}`);
+  return apiClient(`/v1/clips/${jobId}`);
 }
 
 export async function updateClip(
@@ -15,7 +15,7 @@ export async function updateClip(
     end_time?: number;
   },
 ) {
-  return apiClient(`/api/v1/clips/${jobId}/clips/${clipNum}`, {
+  return apiClient(`/v1/clips/${jobId}/clips/${clipNum}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });

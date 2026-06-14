@@ -515,7 +515,7 @@ function TrackItem({
     setExportMessage(null);
 
     try {
-      const result = await apiClient(`/api/v1/clips/${jobId}/export`, {
+      const result = await apiClient(`/v1/clips/${jobId}/export`, {
         method: "POST",
         body: JSON.stringify([exportPayload]),
       });

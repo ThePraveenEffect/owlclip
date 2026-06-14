@@ -14,6 +14,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/v1/auth/register": ["POST", "OPTIONS"],
         "/api/v1/auth/login": ["POST", "OPTIONS"],
         "/api/v1/auth/refresh": ["POST", "OPTIONS"],
+        "/api/v1/payment/webhook": ["POST", "OPTIONS"],
         "/api/v1/health": ["GET"],
         "/docs": ["GET"],
         "/openapi.json": ["GET"],

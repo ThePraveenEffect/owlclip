@@ -19,6 +19,7 @@
     wordByWord?: boolean;       // highlight word by word as video plays
     backgroundColor?: string;   // optional dark backdrop pill (CSS)
     padding?: string;           // inner spacing for backdrop pill (CSS)
+    bottom?: string
     borderRadius?: string;      // corner radius for backdrop pill (CSS)
     }
 

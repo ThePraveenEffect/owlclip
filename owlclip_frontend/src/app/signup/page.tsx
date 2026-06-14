@@ -72,7 +72,7 @@ export default function SignupPage(){
         setServerError(null); // Clear previous server errors
         setSuccessMessage(null); // Clear previous success messages
         try{
-            const response = await apiClient('/api/v1/auth/register',
+            const response = await apiClient('/v1/auth/register',
                 {
                     method: 'POST',
                     body: JSON.stringify(data)
