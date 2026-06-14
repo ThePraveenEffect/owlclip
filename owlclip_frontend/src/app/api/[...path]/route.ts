@@ -36,19 +36,31 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ pat
   // Build headers to forward to backend
   const headers = new Headers();
 
-  // Forward the access token as a cookie to the backend
-  // (backend AuthMiddleware reads access_token from cookies)
+  // Forward ALL original headers from the browser request
+  // This preserves things like X-Razorpay-Signature for webhooks
+  request.headers.forEach((value, key) => {
+    // Skip hop-by-hop headers that shouldn't be forwarded
+    if (["host", "connection", "content-length"].includes(key.toLowerCase())) {
+      return;
+    }
+    headers.set(key, value);
+  });
+
+  // Override Cookie header with our auth tokens (in case browser cookies
+  // don't include them or they were set differently)
   const cookieParts: string[] = [];
   if (accessToken) cookieParts.push(`access_token=${accessToken}`);
   if (refreshToken) cookieParts.push(`refresh_token=${refreshToken}`);
   if (cookieParts.length > 0) {
-    headers.set("Cookie", cookieParts.join("; "));
-  }
-
-  // Forward content-type if present
-  const contentType = request.headers.get("content-type");
-  if (contentType) {
-    headers.set("Content-Type", contentType);
+    // Merge with any existing cookies from the request
+    const existingCookie = request.headers.get("cookie") || "";
+    const existingParts = existingCookie.split(";").map(s => s.trim()).filter(Boolean);
+    // Remove any existing access_token/refresh_token from browser cookies
+    // (we'll use the ones from Next.js cookie store instead)
+    const filtered = existingParts.filter(
+      p => !p.startsWith("access_token=") && !p.startsWith("refresh_token=")
+    );
+    headers.set("Cookie", [...filtered, ...cookieParts].join("; "));
   }
 
   // Forward the request to the backend
@@ -73,7 +85,7 @@ async function handler(request: NextRequest, { params }: { params: Promise<{ pat
     statusText: backendResponse.statusText,
   });
 
-  // Forward content-type from backend
+  // Forward all response headers from backend
   const responseContentType = backendResponse.headers.get("content-type");
   if (responseContentType) {
     response.headers.set("Content-Type", responseContentType);

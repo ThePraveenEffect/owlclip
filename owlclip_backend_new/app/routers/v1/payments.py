@@ -129,15 +129,6 @@ async def payment_webhook(
             )
         )
 
-        # Debug logging — remove after fixing
-        import logging
-        _log = logging.getLogger(__name__)
-        _log.info(f"Webhook signature present: {bool(webhook_signature)}")
-        _log.info(f"Webhook secret set: {bool(settings.RAZORPAY_WEBHOOK_SECRET)}")
-        _log.info(f"Webhook secret length: {len(settings.RAZORPAY_WEBHOOK_SECRET or '')}")
-        _log.info(f"Body length: {len(webhook_body)}")
-        _log.info(f"Body preview: {webhook_body[:200]}")
-
         try:
             client.utility.verify_webhook_signature(
                 webhook_body.decode("utf-8"),  # SDK expects string, not bytes
