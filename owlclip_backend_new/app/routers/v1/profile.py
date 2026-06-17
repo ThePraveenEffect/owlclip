@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException,status
+from fastapi import APIRouter, Depends, HTTPException,status, Request
 from app.core.database import get_db
 from app.db.deps import get_current_user_id
 from app.repositories.users import get_user_by_id
@@ -12,6 +12,7 @@ router = APIRouter()
 
 @router.get("/me")
 async def get_profile(
+    request:Request, 
     user_id=Depends(
         get_current_user_id
     ),
@@ -20,6 +21,18 @@ async def get_profile(
         get_db
     )
 ):
+
+    print("ALL COOKIES:", request.cookies)
+
+    print(
+        "ACCESS:",
+        request.cookies.get("access_token")
+    )
+
+    print(
+        "REFRESH:",
+        request.cookies.get("refresh_token")
+    )
 
     existed_user = (
         await get_user_by_id(
