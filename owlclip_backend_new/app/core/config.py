@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     JWT_EXPIRATION_HOURS: int = 24
     JWT_REFRESH_EXPIRATION_DAYS: int = 7
 
-    ALLOWED_ORIGINS: List[str] = ["https://owlclip.app"]
+    ALLOWED_ORIGINS: List[str] = ["https://owlclip.app", "http://localhost:3000"]
 
     REQUIRE_HTTPS: bool = True  # Enforced in production
     
