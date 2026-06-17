@@ -14,11 +14,13 @@ settings = Settings()
 router = APIRouter()
 
 def get_secure_cookie_params():
-    """✅ Dynamic cookie params based on environment"""
+    production = settings.ENV == "production"
+
     return {
         "httponly": True,
-        "secure": settings.ENV == "production",  # HTTPS only in production
-        "samesite": "strict" if settings.ENV == "production" else "lax",
+        "secure": production,
+        "samesite": "none" if production else "lax",
+        "path": "/",
     }
 
 @router.post("/register", response_model=dict)
@@ -79,7 +81,7 @@ async def logout(request: Request):
     response = JSONResponse(content=response_data, status_code=200)
     cookie_params = get_secure_cookie_params()
     
-    response.delete_cookie(key="access_token", **cookie_params)
+    response.delete_cookie(key="access_token",  **cookie_params)
     response.delete_cookie(key="refresh_token", **cookie_params)
     
     return response
