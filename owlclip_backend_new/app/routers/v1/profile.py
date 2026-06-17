@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException,status, Request
 from app.core.database import get_db
 from app.db.deps import get_current_user_id
 from app.repositories.users import get_user_by_id
+import logging
 
 from datetime import (
     datetime,
@@ -9,6 +10,7 @@ from datetime import (
 )
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.get("/me")
 async def get_profile(
@@ -22,16 +24,16 @@ async def get_profile(
     )
 ):
 
-    print("ALL COOKIES:", request.cookies)
+    logger.warning(
+    f"ALL COOKIES: {dict(request.cookies)}"
+)
 
-    print(
-        "ACCESS:",
-        request.cookies.get("access_token")
+    logger.warning(
+        f"ACCESS: {request.cookies.get('access_token')}"
     )
 
-    print(
-        "REFRESH:",
-        request.cookies.get("refresh_token")
+    logger.warning(
+        f"REFRESH: {request.cookies.get('refresh_token')}"
     )
 
     existed_user = (
