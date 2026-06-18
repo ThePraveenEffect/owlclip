@@ -121,7 +121,7 @@ async def payment_webhook(
 
         try:
             client.utility.verify_webhook_signature(
-                webhook_body,
+                webhook_body.decode("utf-8"),
                 webhook_signature,
                 settings.RAZORPAY_WEBHOOK_SECRET
             )
