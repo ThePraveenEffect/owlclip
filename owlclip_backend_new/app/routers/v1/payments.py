@@ -11,6 +11,7 @@ from app.utils.constants import tier_amount
 from app.core.config import settings
 from sqlalchemy import update, select
 import json
+import logging
 from datetime import (
     datetime,
     timezone,
@@ -19,7 +20,7 @@ from datetime import (
 
 
 router = APIRouter()
-
+logger = logging.getLogger(__name__)
 
 @router.post("/create")
 async def create_order(
@@ -29,7 +30,7 @@ async def create_order(
    db = Depends(get_db)
 ):
 
-
+     logger.warning("order is creating..")
 
      try:
         amount = tier_amount.get(payment_data.tier, 0)
@@ -96,6 +97,8 @@ async def payment_webhook(
     request: Request,
     db=Depends(get_db)
 ):
+
+    logger.warning("webhook ping!")
 
     try:
 

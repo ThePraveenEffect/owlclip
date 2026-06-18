@@ -39,6 +39,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         
         # 3. Require valid token for protected endpoints
         token = request.cookies.get("access_token")
+        logger.warning(f"Cookie : {request.cookies} , {token}")
         
         if not token:
             logger.warning(f"No token for protected endpoint: {path}")

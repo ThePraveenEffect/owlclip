@@ -18,8 +18,8 @@ def get_secure_cookie_params():
 
     return {
         "httponly": True,
-        "secure": production,
-        "samesite": "none" if production else "lax",
+        "secure": production,   
+        "samesite": "lax",
         "path": "/",
     }
 

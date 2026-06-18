@@ -86,12 +86,12 @@ export async function loginAction(data:LoginFormData){
         for(const cookie  of parsedCookies){
             cookieStore.set(cookie.name, cookie.value,{
                 httpOnly:cookie.httpOnly?? true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: cookie.sameSite?.toLowerCase() ==='strict'?
-                'strict' : 'lax',
-                path: cookie.path || '/',
+                secure: true,
+                sameSite: 'lax', 
+                path: '/',
                 maxAge: cookie.maxAge,
                 expires: cookie.expires,
+                domain: '.owlclip.app'
             });
         }
 

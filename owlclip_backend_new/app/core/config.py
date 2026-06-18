@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     # Environment
-    ENV: str = "dev"
+    ENV: str = "production"
     DEBUG: bool = False
 
     # JWT/Security
