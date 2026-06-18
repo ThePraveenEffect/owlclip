@@ -102,10 +102,40 @@ async def payment_webhook(
 
     try:
 
-        webhook_body = (
-            await request.body()
+        webhook_body = await request.body()
+
+
+        webhook_signature = (
+            request.headers.get(
+                "X-Razorpay-Signature"
+            )
         )
 
+        logger.warning(
+       f"signature={webhook_signature}")
+
+        logger.warning(
+            f"secret_loaded={bool(settings.RAZORPAY_WEBHOOK_SECRET)}"
+        )
+
+        logger.warning(
+            webhook_body[:200]
+        )
+
+        try:
+            client.utility.verify_webhook_signature(
+                webhook_body.decode("utf-8"),  # SDK expects string, not bytes
+                webhook_signature,
+                settings.RAZORPAY_WEBHOOK_SECRET
+            )
+
+        except Exception:
+
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid webhook signature"
+            )
+        
         payload = json.loads(
             webhook_body
         )
@@ -125,26 +155,6 @@ async def payment_webhook(
             ["payment"]
             ["entity"]
         )
-
-        webhook_signature = (
-            request.headers.get(
-                "X-Razorpay-Signature"
-            )
-        )
-
-        try:
-            client.utility.verify_webhook_signature(
-                webhook_body.decode("utf-8"),  # SDK expects string, not bytes
-                webhook_signature,
-                settings.RAZORPAY_WEBHOOK_SECRET
-            )
-
-        except Exception:
-
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid webhook signature"
-            )
 
         payment = await db.scalar(
 
@@ -308,6 +318,8 @@ async def payment_webhook(
             status_code=500,
             detail=str(e)
         )
+
+
 
 @router.get("/verify")
 async def verify_payment_ui(
