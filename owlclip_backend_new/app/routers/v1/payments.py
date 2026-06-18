@@ -103,6 +103,7 @@ async def payment_webhook(
     try:
 
         webhook_body = await request.body()
+        logger.warning("webhook body ", webhook_body)
 
         logger.warning(dict(request.headers))
         webhook_signature = request.headers.get(
@@ -117,9 +118,6 @@ async def payment_webhook(
             f"secret_loaded={bool(settings.RAZORPAY_WEBHOOK_SECRET)}"
         )
 
-        logger.warning(
-            webhook_body[:200]
-        )
 
         try:
             client.utility.verify_webhook_signature(
@@ -128,7 +126,7 @@ async def payment_webhook(
                 settings.RAZORPAY_WEBHOOK_SECRET
             )
 
-        except Exception:
+        except Exception as e:
             logger.error(f"Signature verification failed: {str(e)}")
             raise HTTPException(
                 status_code=400,
