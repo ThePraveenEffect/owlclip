@@ -104,7 +104,7 @@ async def payment_webhook(
 
         webhook_body = await request.body()
 
-
+        logger.warning(dict(request.headers))
         webhook_signature = (
             request.headers.get(
                 "X-Razorpay-Signature"
