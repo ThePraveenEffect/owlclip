@@ -105,11 +105,10 @@ async def payment_webhook(
         webhook_body = await request.body()
 
         logger.warning(dict(request.headers))
-        webhook_signature = (
-            request.headers.get(
-                "X-Razorpay-Signature"
-            )
-        )
+        webhook_signature = request.headers.get(
+            "x-razorpay-signature"
+         )
+
 
         logger.warning(
        f"signature={webhook_signature}")
@@ -124,13 +123,13 @@ async def payment_webhook(
 
         try:
             client.utility.verify_webhook_signature(
-                webhook_body.decode("utf-8"),  # SDK expects string, not bytes
+                webhook_body,
                 webhook_signature,
                 settings.RAZORPAY_WEBHOOK_SECRET
             )
 
         except Exception:
-
+            logger.error(f"Signature verification failed: {str(e)}")
             raise HTTPException(
                 status_code=400,
                 detail="Invalid webhook signature"
