@@ -103,14 +103,17 @@ async def payment_webhook(
     try:
 
         webhook_body = await request.body()
-        logger.warning("webhook body ", webhook_body)
+        logger.warning(f"webhook body: {webhook_body}")
 
         logger.warning(dict(request.headers))
         webhook_signature = request.headers.get(
             "x-razorpay-signature"
          )
 
-
+        logger.warning("ALL HEADERS")
+        for k, v in request.headers.items():
+            logger.warning("%s=%s", k, v)
+            
         logger.warning(
        f"signature={webhook_signature}")
 
