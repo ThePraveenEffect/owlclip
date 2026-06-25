@@ -11,11 +11,11 @@ settings = Settings()
 class AuthMiddleware(BaseHTTPMiddleware):
     # ✅ Public endpoints list remains the same
     PUBLIC_ENDPOINTS = {
-        "/api/v1/auth/register": ["POST", "OPTIONS"],
-        "/api/v1/auth/login": ["POST", "OPTIONS"],
-        "/api/v1/auth/refresh": ["POST", "OPTIONS"],
-        "/api/v1/payment/webhook": ["POST", "OPTIONS"],
-        "/api/v1/health": ["GET"],
+        "/v1/auth/register": ["POST", "OPTIONS"],
+        "/v1/auth/login": ["POST", "OPTIONS"],
+        "/v1/auth/refresh": ["POST", "OPTIONS"],
+        "/v1/payment/webhook": ["POST", "OPTIONS"],
+        "/v1/health": ["GET"],
         "/docs": ["GET"],
         "/openapi.json": ["GET"],
     }
@@ -40,7 +40,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # 3. Require valid token for protected endpoints
         token = request.cookies.get("access_token")
         logger.warning(f"Cookie : {request.cookies} , {token}")
-        
+        print(token)
+
         if not token:
             logger.warning(f"No token for protected endpoint: {path}")
             # ✅ FIX: Return JSONResponse instead of raising HTTPException

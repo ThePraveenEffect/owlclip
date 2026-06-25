@@ -88,7 +88,7 @@ export default function BillingSection() {
 
 
   const verifyUserPayment = async()=>{
-    const res = await axios.get(`${env.BASE_URL}/api/v1/payment/verify`,
+    const res = await axios.get(`${env.BASE_URL}/v1/payment/verify`,
       {withCredentials:true}
     );
 
@@ -100,7 +100,7 @@ export default function BillingSection() {
 
 
   const handleBuyClick = async(type)=>{
-   const order = await axios.post(`${env.BASE_URL}/api/v1/payment/create`,
+   const order = await axios.post(`${env.BASE_URL}/v1/payment/create`,
     {
       tier: type,
     },{withCredentials:true}

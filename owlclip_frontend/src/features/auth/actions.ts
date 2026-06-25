@@ -52,7 +52,7 @@ export async function loginAction(data:LoginFormData){
 
        
         const response = await fetch(
-            `${process.env.BACKEND_URL}/api/v1/auth/login`,
+            `${process.env.BACKEND_URL}/v1/auth/login`,
             {
                 method:'POST',
                 headers:{
@@ -76,11 +76,13 @@ export async function loginAction(data:LoginFormData){
         }
        
         const setCookies = response.headers.getSetCookie();
+        console.log(setCookies);
+        
         const cookieStore = await cookies(); 
 
         // cookie in structure format like in array
         const parsedCookies = setCookieParser.parse(setCookies)
-        
+        console.log(parsedCookies)
 
 
         for(const cookie  of parsedCookies){
@@ -94,6 +96,7 @@ export async function loginAction(data:LoginFormData){
                 domain: '.owlclip.app'
             });
         }
+        console.log(cookieStore)
 
 
         return {

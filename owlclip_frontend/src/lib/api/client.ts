@@ -34,7 +34,7 @@
       if( response.status === 401){
 
         try{
-            const refreshResponse = await doFetch("/api/v1/auth/refresh",{
+            const refreshResponse = await doFetch("/v1/auth/refresh",{
                 method:"POST",
             });
 
