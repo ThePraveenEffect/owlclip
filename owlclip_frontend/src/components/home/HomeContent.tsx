@@ -260,6 +260,17 @@ console.log("isLoading:", isLoading);
         </div>
       </section>)}
 
+     {user && (
+  <div className="flex justify-center items-center w-full my-5">
+    <div className="bg-gray-100 px-6 py-3 rounded-full shadow-sm border border-gray-200 font-sans">
+      <span className="text-sm font-semibold text-gray-700 tracking-wide">
+        Credits Remaining: <strong className="text-blue-600">{user.credits.remaining}</strong>
+      </span>
+    </div>
+  </div>
+)}
+
+
       {!user?<DemoVideo/>: <JobCreate/> }
 
 

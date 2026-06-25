@@ -53,3 +53,42 @@ async def update_user_last_login(db, user_id):
     )
     await db.execute(stmt)
     await db.commit()
+
+
+
+async def deduct_credits(
+    db,
+    user_id,
+    amount: int
+) -> bool:
+
+    result = await db.execute(
+        update(User)
+        .where(
+            User.id == user_id,
+            User.credits_remaining >= amount
+        )
+        .values(
+            credits_remaining=User.credits_remaining - amount
+        )
+        .returning(User.credits_remaining)
+    )
+
+    remaining = result.scalar_one_or_none()
+
+    return remaining is not None
+
+
+
+async def refund_credits(
+    db,
+    user_id,
+    amount: int
+):
+    await db.execute(
+        update(User)
+        .where(User.id == user_id)
+        .values(
+            credits_remaining=User.credits_remaining + amount
+        )
+    )

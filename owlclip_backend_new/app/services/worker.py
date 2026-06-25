@@ -5,8 +5,10 @@ import asyncio
 import logging
 from app.services.queue_service import QueueService
 from app.repositories.upload_jobs import update_status
+from app.repositories.users import refund_credits
 from app.services.ingestion import ingestion_pipeline
 from app.core.database import AsyncSessionLocal
+from app.db.deps import get_current_user_id
 
 logger = logging.getLogger(__name__)
 
@@ -47,12 +49,20 @@ async def worker_loop(queue: QueueService):
                     
             except Exception as e:
                 logger.error(f"Job failed: {str(e)}", exc_info=True)
-                try:
-                    async with AsyncSessionLocal() as db:
+                
+                async with AsyncSessionLocal() as db:
                         await update_status(db, job_id, "FAILED")
+                        await refund_credits(
+                                    db,
+                                    get_current_user_id,
+                                    10
+                                )
+
                         await db.commit()
-                except:
-                    pass
+                
+                
+
+
           
         except Exception as e:
             logger.error(f"Worker error: {str(e)}", exc_info=True)

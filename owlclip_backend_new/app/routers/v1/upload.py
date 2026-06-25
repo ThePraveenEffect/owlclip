@@ -5,6 +5,7 @@ from app.services.job_service import JobService
 from app.repositories.upload_jobs import get_videojob
 from app.utils.AppError import AppException
 from starlette import status
+from app.repositories.users import deduct_credits
 import re
 
 
@@ -72,8 +73,30 @@ class FinalClipsResponse(BaseModel):
 async def upload(
     data: UploadRequest, 
     user_id: str = Depends(get_current_user_id),
-    job_service: JobService = Depends(get_job_service)
+    job_service: JobService = Depends(get_job_service),
+    db = Depends(get_db)
 ):
+    success = await deduct_credits(
+    db=db,
+    user_id=user_id,
+    amount=10
+)
+
+    if not success:
+        raise AppException(
+            status_code=402,
+            code="INSUFFICIENT_CREDITS",
+            message="Not enough credits.",
+            issues=[
+                {
+                    "field": "credits",
+                    "message": "You need at least 10 credits."
+                }
+            ]
+        )
+
+    await db.commit()
+
     job_id = await job_service.create_job(data.yt_url, user_id)
     response_data = {
         "job_id": job_id,
