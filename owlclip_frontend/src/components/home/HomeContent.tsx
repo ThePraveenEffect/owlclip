@@ -40,9 +40,7 @@ export default function Home() {
     isLoading,
     error
   } = useAuth();
-console.log("auth error:", error);
-console.log("isLoading:", isLoading);
-   console.log("working",user)
+
 
  if (isLoading) {
     return (
@@ -145,120 +143,85 @@ console.log("isLoading:", isLoading);
     </header>
     
       {/* Hero Section */}
-     {!user && (
-        <section className="relative pt-20 pb-24 sm:pt-28 sm:pb-32 overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-linear-to-b from-orange-50/30 via-background to-background pointer-events-none" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-orange-100/20 via-transparent to-transparent pointer-events-none" />
-          
-          <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center max-w-4xl mx-auto">
-            
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-orange-50 to-orange-100 border border-orange-200/80 text-orange-700 text-sm font-semibold mb-8 shadow-sm">
-              <Sparkles className="w-4 h-4" strokeWidth={2.5} />
-              <span>Early Access Available</span>
-            </div>
+    {/* Hero Section */}
+{!user && (
+  <section className="relative overflow-hidden pt-24 pb-28 sm:pt-32 sm:pb-36">
+    {/* Background */}
+    <div className="absolute inset-0 bg-background" />
 
-            {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-foreground leading-[1.1] mb-7 tracking-tight">
-              Turn any YouTube video into{' '}
-              <span className="relative inline-block">
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-600 via-red-500 to-orange-600">
-                  viral clips
-                </span>
-              </span>{' '}
-              in minutes
-            </h1>
+    {/* Soft gradient */}
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.14),transparent_55%)]" />
 
-            {/* Subheadline */}
-            <p className="text-xl sm:text-2xl text-muted-foreground mb-10 leading-relaxed font-light max-w-3xl mx-auto">
-              Paste a YouTube link. Our AI finds the best moments. Get ready-to-post clips without spending hours editing.
-            </p>
+    {/* Glow */}
+    <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-orange-500/10 blur-[120px]" />
+    <div className="absolute -right-40 top-0 h-[30rem] w-[30rem] rounded-full bg-red-500/10 blur-[140px]" />
 
-            {/* CTA */}
-            <div className="mb-12">
-              <a
-                href="#waitlist"
-                className="inline-flex items-center gap-2.5 px-10 py-5 bg-linear-to-r from-orange-500 via-orange-600 to-red-600 text-white text-lg font-bold rounded-xl hover:from-orange-600 hover:via-orange-700 hover:to-red-700 transition-all duration-300 shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/50 transform hover:-translate-y-1"
-              >
-                Join Waitlist – Get 10 Free Credits
-              </a>
-              <p className="text-sm text-muted-foreground mt-4 font-medium">
-                No credit card required • Early access included
-              </p>
-            </div>
+    {/* Grid */}
+    <div className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,#888_1px,transparent_1px),linear-gradient(to_bottom,#888_1px,transparent_1px)] [background-size:60px_60px]" />
 
+    {/* Small noise */}
+    <div className="absolute inset-0 bg-[radial-gradient(circle,transparent_1px,transparent_1px)] opacity-[0.015]" />
 
+    <div className="relative mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-5xl text-center">
 
-          
+        {/* Badge */}
+        <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-orange-200/60 bg-white/70 px-5 py-2 backdrop-blur-md shadow-lg shadow-orange-500/5 dark:border-orange-500/20 dark:bg-white/5">
+          <Sparkles className="h-4 w-4 text-orange-500" />
+          <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">
+            AI-Powered YouTube Clip Generator
+          </span>
+        </div>
 
-      
-    
+        {/* Heading */}
+        <h1 className="mx-auto max-w-5xl text-5xl font-black tracking-tight leading-[1.05] text-foreground sm:text-6xl lg:text-7xl">
+          Turn long YouTube videos into{" "}
+          <span className="bg-gradient-to-r from-orange-500 via-orange-600 to-red-500 bg-clip-text text-transparent">
+            viral Shorts, Reels & TikToks
+          </span>{" "}
+          in minutes
+        </h1>
 
-<style jsx>{`
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -30px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
-  }
-  
-  @keyframes float-delayed {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(-30px, 30px) scale(0.9); }
-    66% { transform: translate(20px, -20px) scale(1.1); }
-  }
-  
-  @keyframes float-slow {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(15px, 15px) scale(1.05); }
-  }
-  
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(200%); }
-  }
-  
-  @keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  
-  @keyframes pulse-slow {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
+        {/* Subtitle */}
+        <p className="mx-auto mt-8 max-w-3xl text-lg leading-8 text-muted-foreground sm:text-xl">
+          Paste a YouTube link and let AI find the best moments, generate
+          captions, and create ready-to-publish vertical videos without
+          spending hours editing.
+        </p>
 
-  .animate-float {
-    animation: float 8s ease-in-out infinite;
-  }
-  
-  .animate-float-delayed {
-    animation: float-delayed 10s ease-in-out infinite;
-  }
-  
-  .animate-float-slow {
-    animation: float-slow 12s ease-in-out infinite;
-  }
-  
-  .animate-shimmer {
-    animation: shimmer 3s ease-in-out infinite;
-  }
-  
-  .animate-spin-slow {
-    animation: spin-slow 20s linear infinite;
-  }
-  
-  .animate-pulse-slow {
-    animation: pulse-slow 3s ease-in-out infinite;
-  }
-`}</style>
+        {/* CTA */}
+        <div className="mt-12">
+          <a
+            href="/signup"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 px-10 py-5 text-lg font-semibold text-white shadow-xl shadow-orange-500/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-orange-500/40"
+          >
+            Get Started
+          </a>
 
- 
+          <p className="mt-4 text-sm text-muted-foreground">
+            Start creating AI-powered clips today.
+          </p>
+        </div>
 
+        {/* Trust Pills */}
+        <div className="mt-14 flex flex-wrap justify-center gap-3">
+          <div className="rounded-full border border-border bg-background/70 px-4 py-2 text-sm text-muted-foreground backdrop-blur-md">
+            ✨ AI finds the best moments
+          </div>
+
+          <div className="rounded-full border border-border bg-background/70 px-4 py-2 text-sm text-muted-foreground backdrop-blur-md">
+            📝 Auto-generated captions
+          </div>
+
+          <div className="rounded-full border border-border bg-background/70 px-4 py-2 text-sm text-muted-foreground backdrop-blur-md">
+            📱 Built for Shorts, Reels & TikTok
           </div>
         </div>
-      </section>)}
+
+      </div>
+    </div>
+  </section>
+)}
 
      {user && (
   <div className="flex justify-center items-center w-full my-5">
@@ -521,7 +484,7 @@ console.log("isLoading:", isLoading);
         </div>
       </section>
 
-      {/* Social Proof Section */}
+      {/* Social Proof Section
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-card via-background to-card pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -568,10 +531,10 @@ console.log("isLoading:", isLoading);
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Waitlist Section */}
-      <section id="waitlist" className="py-28 bg-background">
+      {/* <section id="waitlist" className="py-28 bg-background">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center">
           <h2 className="text-4xl font-bold text-foreground mb-4 tracking-tight">
             Ready to create viral clips?
@@ -580,7 +543,7 @@ console.log("isLoading:", isLoading);
             Join the waitlist and get 10 free credits
           </p>
         </div>
-      </section>
+      </section> */}
 
       {/* Testimonials Section */}
       <section className="py-24 bg-linear-to-b from-muted/30 to-background">
@@ -628,7 +591,7 @@ console.log("isLoading:", isLoading);
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-5 tracking-tight">
             Start creating viral clips today
           </h2>
-          <p className="text-xl text-muted-foreground mb-10 font-light">
+          {/* <p className="text-xl text-muted-foreground mb-10 font-light">
             Join 10,000+ creators already on the waitlist
           </p>
           <a
@@ -636,7 +599,7 @@ console.log("isLoading:", isLoading);
             className="inline-flex items-center gap-2.5 px-10 py-5 bg-linear-to-r from-orange-500 via-orange-600 to-red-600 text-white text-lg font-bold rounded-xl hover:from-orange-600 hover:via-orange-700 hover:to-red-700 transition-all duration-300 shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/50 transform hover:-translate-y-1"
           >
             Join the Waitlist
-          </a>
+          </a> */}
         </div>
       </section>
 
@@ -656,7 +619,7 @@ console.log("isLoading:", isLoading);
               <span className="text-xl font-bold ml-2 text-foreground tracking-tight">OwlClip</span>
             </div>
             <div className="text-sm text-muted-foreground font-medium">
-              © 2025 OwlClip. All rights reserved.
+              © 2026 OwlClip. All rights reserved.
             </div>
           </div>
         </div>

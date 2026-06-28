@@ -18,7 +18,7 @@ export default function StatCard({ title, value, subtitle, icon: Icon, trend, cl
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
           <p className="text-3xl font-bold text-foreground tracking-tight">{value}</p>
           {subtitle && (
-            <p className="text-sm text-muted-foreground">{subtitle}</p>
+            <p className="text-md text-muted-foreground">{subtitle}</p>
           )}
           {trend && (
             <div className="flex items-center gap-1.5">

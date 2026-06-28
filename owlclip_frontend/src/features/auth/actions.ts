@@ -84,18 +84,40 @@ export async function loginAction(data:LoginFormData){
         const parsedCookies = setCookieParser.parse(setCookies)
         console.log(parsedCookies)
 
+        // Production code
 
-        for(const cookie  of parsedCookies){
-            cookieStore.set(cookie.name, cookie.value,{
-                httpOnly:cookie.httpOnly?? true,
-                secure: true,
-                sameSite: 'lax', 
-                path: '/',
-                maxAge: cookie.maxAge,
-                expires: cookie.expires,
-                domain: '.owlclip.app'
-            });
-        }
+        // for(const cookie  of parsedCookies){
+        //     cookieStore.set(cookie.name, cookie.value,{
+        //         httpOnly:cookie.httpOnly?? true,
+        //         secure: true,
+        //         sameSite: 'lax', 
+        //         path: '/',
+        //         maxAge: cookie.maxAge,
+        //         expires: cookie.expires,
+        //         domain: '.owlclip.app'
+        //     });
+        // }
+
+        
+        // Development code 
+        const isLocalhost = process.env.NODE_ENV === 'development' || 
+                    (typeof window !== 'undefined' && window.location.hostname === 'localhost');
+
+for (const cookie of parsedCookies) {
+    cookieStore.set(cookie.name, cookie.value, {
+        httpOnly: cookie.httpOnly ?? true,
+        // Disable secure flag on localhost unless you use local HTTPS
+        secure: !isLocalhost, 
+        sameSite: 'lax', 
+        path: '/',
+        maxAge: cookie.maxAge,
+        expires: cookie.expires,
+        // Omit the domain entirely for localhost so it defaults to the current host
+        ...(isLocalhost ? {} : { domain: '.owlclip.app' })
+    });
+}
+
+
         console.log(cookieStore)
 
 

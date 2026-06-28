@@ -63,9 +63,9 @@ export default function UserProfile({ user }: any) {
               Dashboard
             </button>
             
-            <button className="text-left text-sm text-foreground hover:bg-muted p-2 rounded-lg">
+            {/* <button className="text-left text-sm text-foreground hover:bg-muted p-2 rounded-lg">
               Settings
-            </button>
+            </button> */}
 
 
           </div>

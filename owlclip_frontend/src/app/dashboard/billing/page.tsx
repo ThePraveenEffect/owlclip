@@ -1,7 +1,17 @@
+'use client'
+
 import Sidebar from '@/components/dashboard/Sidebar';
 import BillingSection from '@/components/dashboard/BillingSection';
+import { useBillingHistory } from '@/hooks/useBillingHistory';
 
 export default function BillingPage() {
+
+  
+  // const { data: billingHistory, isLoading, error } = useBillingHistory();
+
+  // console.log('Billing History:', billingHistory);
+
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="flex">
@@ -14,7 +24,7 @@ export default function BillingPage() {
           </div>
 
           {/* Current Plan Summary */}
-          <div className="rounded-2xl border border-border bg-card p-6 mb-6">
+          {/* <div className="rounded-2xl border border-border bg-card p-6 mb-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Current Plan</p>
@@ -29,13 +39,13 @@ export default function BillingPage() {
             <div className="mt-4 h-2 bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full" style={{ width: '64%' }} />
             </div>
-          </div>
+          </div> */}
 
           {/* Plans */}
           <BillingSection />
 
           {/* Payment Method */}
-          <div className="rounded-2xl border border-border bg-card p-6 mt-6">
+          {/* <div className="rounded-2xl border border-border bg-card p-6 mt-6">
             <h3 className="text-base font-semibold text-foreground mb-4">Payment Method</h3>
             <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/50">
               <div className="flex items-center gap-3">
@@ -51,10 +61,10 @@ export default function BillingPage() {
                 Update
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* Billing History */}
-          <div className="rounded-2xl border border-border bg-card p-6 mt-6">
+          {/* <div className="rounded-2xl border border-border bg-card p-6 mt-6">
             <h3 className="text-base font-semibold text-foreground mb-4">Billing History</h3>
             <div className="space-y-3">
               {[
@@ -75,7 +85,7 @@ export default function BillingPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
         </main>
       </div>
     </div>

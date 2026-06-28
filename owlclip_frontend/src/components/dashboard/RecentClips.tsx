@@ -1,47 +1,67 @@
 'use client';
 
 import { Play, Download, MoreHorizontal, Clock, CheckCircle2 } from 'lucide-react';
+import {useMyClip} from '@/hooks/useMyClip';
+import { useRouter } from 'next/navigation';
 
-const clips = [
-  {
-    id: '1',
-    title: 'Best Moments from Podcast #42',
-    thumbnail: null,
-    duration: '0:42',
-    status: 'ready',
-    createdAt: '2 hours ago',
-    size: '12 MB',
-  },
-  {
-    id: '2',
-    title: 'Top 3 Tips for Remote Work',
-    thumbnail: null,
-    duration: '1:15',
-    status: 'ready',
-    createdAt: '5 hours ago',
-    size: '24 MB',
-  },
-  {
-    id: '3',
-    title: 'Why AI Changes Everything',
-    thumbnail: null,
-    duration: '0:58',
-    status: 'processing',
-    createdAt: '1 day ago',
-    size: '--',
-  },
-  {
-    id: '4',
-    title: 'Coding Interview Tips',
-    thumbnail: null,
-    duration: '1:32',
-    status: 'ready',
-    createdAt: '2 days ago',
-    size: '31 MB',
-  },
-];
+// const clips = [
+//   {
+//     id: '1',
+//     title: 'Best Moments from Podcast #42',
+//     thumbnail: null,
+//     duration: '0:42',
+//     status: 'ready',
+//     createdAt: '2 hours ago',
+//     size: '12 MB',
+//   },
+//   {
+//     id: '2',
+//     title: 'Top 3 Tips for Remote Work',
+//     thumbnail: null,
+//     duration: '1:15',
+//     status: 'ready',
+//     createdAt: '5 hours ago',
+//     size: '24 MB',
+//   },
+//   {
+//     id: '3',
+//     title: 'Why AI Changes Everything',
+//     thumbnail: null,
+//     duration: '0:58',
+//     status: 'processing',
+//     createdAt: '1 day ago',
+//     size: '--',
+//   },
+//   {
+//     id: '4',
+//     title: 'Coding Interview Tips',
+//     thumbnail: null,
+//     duration: '1:32',
+//     status: 'ready',
+//     createdAt: '2 days ago',
+//     size: '31 MB',
+//   },
+// ];
+
+
+
 
 export default function RecentClips() {
+
+  const router = useRouter();
+
+  const { data, isLoading, isError } = useMyClip();
+ if (isLoading) return <div>Loading your clips...</div>;
+  if (isError) return <div>Error loading clips.</div>;
+
+  const clips = data?.clips;  
+
+
+
+
+
+
+
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center justify-between mb-5">
@@ -55,7 +75,7 @@ export default function RecentClips() {
       </div>
 
       <div className="space-y-3">
-        {clips.map((clip) => (
+        {clips?.map((clip) => (
           <div
             key={clip.id}
             className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition group cursor-pointer"
@@ -70,8 +90,8 @@ export default function RecentClips() {
               <p className="text-sm font-medium text-foreground truncate">{clip.title}</p>
               <div className="flex items-center gap-3 mt-1">
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {clip.duration}
+                  
+                  {clip.yt_url}
                 </span>
                 <span className="text-xs text-muted-foreground">{clip.createdAt}</span>
               </div>
@@ -95,9 +115,20 @@ export default function RecentClips() {
                   <Download className="w-4 h-4" />
                 </button>
               )}
-              <button className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground opacity-0 group-hover:opacity-100 transition">
+              {/* <button className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground opacity-0 group-hover:opacity-100 transition">
                 <MoreHorizontal className="w-4 h-4" />
-              </button>
+              </button> */}
+
+             {clip.status === 'completed' && (
+                <button 
+                  onClick={() => router.push(`/clips/${clip.job_id || clip.id}`)}
+                  className="text-md bg-orange-500 text-white px-4 py-1 rounded-md hover:bg-orange-600 transition"
+                >
+                  Play
+                </button>  
+              )}
+
+
             </div>
           </div>
         ))}

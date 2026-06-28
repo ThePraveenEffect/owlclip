@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Music, Type, Play, Pause } from "lucide-react";
+import { ArrowLeft, Music, Type, Play, Pause, CheckCircle2 } from "lucide-react";
 import {
   SUBTITLE_PRESETS,
   presetToTextStyle,
@@ -431,6 +431,15 @@ function TrackItem({
     type: "success" | "error";
     text: string;
   } | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+const [progress, setProgress] = useState(0);
+const [progressMessage, setProgressMessage] = useState("Preparing...");
+const progressInterval = useRef<NodeJS.Timeout | null>(null);
+const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+const [confirmClose, setConfirmClose] = useState(false);
+
+
 
   const togglePanel = useCallback((panel: SidebarPanel) => {
     setActivePanel((prev) => (prev === panel ? "none" : panel));
@@ -453,6 +462,25 @@ function TrackItem({
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
   }, []);
+
+
+
+useEffect(() => {
+  if (!exporting) return;
+
+  setProgress(0);
+
+  const interval = setInterval(() => {
+    setProgress((prev) => {
+      if (prev >= 90) return prev;
+      return prev + Math.random() * 10;
+    });
+  }, 400);
+
+  return () => clearInterval(interval);
+}, [exporting]);
+
+
 
   const togglePlay = useCallback(() => {
     const video = videoRef.current;
@@ -481,64 +509,177 @@ function TrackItem({
   });
 
 
+const PROGRESS_STAGES = [
+  {
+    target: 20,
+    duration: 4000,
+    message: "Preparing video...",
+  },
+  {
+    target: 45,
+    duration: 7000,
+    message: "Rendering subtitles...",
+  },
+  {
+    target: 70,
+    duration: 12000,
+    message: "Encoding video...",
+  },
+  {
+    target: 85,
+    duration: 14000,
+    message: "Optimizing quality...",
+  },
+  {
+    target: 92,
+    duration: 10000,
+    message: "Uploading export...",
+  },
+  {
+    target: 95,
+    duration: 12000,
+    message: "Generating download...",
+  },
+  {
+    target: 98,
+    duration: 30000,
+    message: "Finalizing...",
+  },
+];
+
+const startFakeProgress = () => {
+  if (progressInterval.current) {
+    clearInterval(progressInterval.current);
+  }
+
+  setProgress(0);
+
+  let currentStage = 0;
+
+  const runStage = () => {
+    if (currentStage >= PROGRESS_STAGES.length) return;
+
+    const stage = PROGRESS_STAGES[currentStage];
+
+    setProgressMessage(stage.message);
+
+    const start = progress;
+    const end = stage.target;
+
+    const totalSteps = 60;
+    const increment = (end - start) / totalSteps;
+    const intervalTime = stage.duration / totalSteps;
+
+    let current = start;
+
+    progressInterval.current = setInterval(() => {
+      current += increment;
+
+      if (current >= end) {
+        setProgress(end);
+
+        clearInterval(progressInterval.current!);
+
+        currentStage++;
+
+        runStage();
+
+        return;
+      }
+
+      setProgress(Math.round(current));
+    }, intervalTime);
+  };
+
+  runStage();
+};
+
+const finishProgress = () => {
+  if (progressInterval.current) {
+    clearInterval(progressInterval.current);
+  }
+
+  setProgressMessage("Export complete!");
+
+  setProgress(100);
+};
+
+
+
+
+
   //  console.log(clip)
    
-  const handleExport = async () => {
-    const video = videoRef.current;
-    if (!video) return;
+    const handleExport = async () => {
+      setExporting(true);
+startFakeProgress();
+      const video = videoRef.current;
+      if (!video) return;
 
-    // ── Build the exact payload shape the backend expects ──────────────
-    // POST /api/v1/clips/{job_id}/export  body = ExportClipPayload[]
-    const exportPayload = {
-      clip_num: clip.clip_num,
-      title: clip.title,
-      url: clip.url,
-      viral_score: clip.viral_score,
-      reasoning: clip.reasoning,
-      start_time: clip.start_time,
-      end_time: clip.end_time,
-      subtitles: subtitles.map((s) => ({
-        text: s.text,
-        start: Number(s.start),
-        end: Number(s.end),
-      })),
-      subtitlePreset: selectedPreset,
-    };
+      // ── Build the exact payload shape the backend expects ──────────────
+      // POST /api/v1/clips/{job_id}/export  body = ExportClipPayload[]
+      const exportPayload = {
+        clip_num: clip.clip_num,
+        title: clip.title,
+        url: clip.url,
+        viral_score: clip.viral_score,
+        reasoning: clip.reasoning,
+        start_time: clip.start_time,
+        end_time: clip.end_time,
+        subtitles: subtitles.map((s) => ({
+          text: s.text,
+          start: Number(s.start),
+          end: Number(s.end),
+        })),
+        subtitlePreset: selectedPreset,
+      };
 
-    // Pause video during export so the user knows something is happening
-    const wasPlaying = !video.paused;
-    video.pause();
-    setIsPlaying(false);
+      // Pause video during export so the user knows something is happening
+      const wasPlaying = !video.paused;
+      video.pause();
+      setIsPlaying(false);
 
-    // Show loading state on the Export button
-    setExporting(true);
-    setExportMessage(null);
+      // Show loading state on the Export button
+      setExporting(true);
+      setExportMessage(null);
 
-    try {
-      const result = await apiClient(`/v1/clips/${jobId}/export`, {
-        method: "POST",
-        body: JSON.stringify([exportPayload]),
-      });
-      setExportMessage({
-        type: "success",
-        text: result?.message || "Export started! You'll receive the video shortly.",
-      });
-    } catch (error: any) {
-      console.error("Export failed:", error);
-      setExportMessage({
-        type: "error",
-        text: error?.message || "Export failed. Please try again.",
-      });
-    } finally {
-      setExporting(false);
-      if (wasPlaying) {
-        video.play().catch(() => {});
-        setIsPlaying(true);
+      try {
+        const result = await apiClient(`/v1/clips/${jobId}/export`, {
+          method: "POST",
+          body: JSON.stringify([exportPayload]),
+        });
+        finishProgress();
+        console.log("Full API Response:", result);
+
+// 3. Access the property based on the log
+console.log("URL:", result.url);  
+        console.log(result.url);
+
+setDownloadUrl(result.url);
+
+setTimeout(() => {
+    setExporting(false);
+}, 700);
+      } catch (error: any) {
+        console.error("Export failed:", error);
+        setExportMessage({
+          type: "error",
+          text: error?.message || "Export failed. Please try again.",
+        });
+      } finally {
+        setExporting(false);
+
+        if (progressInterval.current) {
+    clearInterval(progressInterval.current);
+}
+        if (wasPlaying) {
+          video.play().catch(() => {});
+          setIsPlaying(true);
+        }
+        // Auto-dismiss success message after 6s
+        setTimeout(() => setExportMessage(null), 6000);
       }
-      // Auto-dismiss success message after 6s
-      setTimeout(() => setExportMessage(null), 6000);
-    }
-  };
+    };
 
 
 
@@ -561,6 +702,136 @@ function TrackItem({
               {clip.title}
             </span>
           </div>
+
+
+{exporting && (
+  <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center">
+
+    <div className="w-[420px] rounded-2xl bg-zinc-900 border border-zinc-800 p-8 shadow-2xl">
+
+      <div className="flex justify-center mb-6">
+
+        <div className="relative">
+
+          <div className="w-14 h-14 rounded-full border-4 border-zinc-700"></div>
+
+          <div className="absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+
+        </div>
+
+      </div>
+
+      <h2 className="text-center text-xl font-semibold text-white">
+        Exporting Clip
+      </h2>
+
+      <p className="text-center text-zinc-400 mt-2">
+        {progressMessage}
+      </p>
+
+      <div className="mt-8">
+
+        <div className="h-3 rounded-full bg-zinc-800 overflow-hidden">
+
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500 bg-[length:200%_100%] animate-[shimmer_2s_linear_infinite] transition-all duration-500"
+            style={{
+              width: `${progress}%`,
+            }}
+          />
+
+        </div>
+
+        <div className="flex justify-between mt-2">
+
+          <span className="text-sm text-zinc-500">
+            {progress}%
+          </span>
+
+          <span className="text-sm text-zinc-500">
+            Please don't close this page
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+)}
+
+
+
+{downloadUrl && (
+  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
+    <div className="bg-zinc-900 rounded-xl p-6 text-center">
+
+      <h2 className="text-2xl font-bold">
+        🎉 Export Complete
+      </h2>
+
+      <p className="mt-2">
+        Your clip is ready.
+      </p>
+
+      <a
+        href={downloadUrl}
+        download
+        className="mt-6 inline-flex rounded-lg bg-blue-600 px-6 py-3 text-white"
+      >
+        Download Video
+      </a>
+
+     <button
+  onClick={() => setConfirmClose(true)}
+  className="rounded-lg border border-zinc-700 px-6 py-3 text-zinc-300 transition hover:bg-zinc-800"
+>
+  Close
+</button>
+
+    </div>
+
+  </div>
+)}
+
+
+{confirmClose && (
+  <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60">
+    <div className="w-full max-w-sm rounded-xl bg-zinc-900 p-6 text-center">
+      <h3 className="text-xl font-semibold text-white">
+        Close export?
+      </h3>
+
+      <p className="mt-3 text-zinc-400">
+        If you close this window before downloading your clip,
+        you may need to export it again.
+      </p>
+
+      <div className="mt-6 flex justify-center gap-3">
+        <button
+          onClick={() => setConfirmClose(false)}
+          className="rounded-lg border border-zinc-700 px-5 py-2.5 text-zinc-300 hover:bg-zinc-800"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={() => {
+            setConfirmClose(false);
+            setDownloadUrl(null);
+          }}
+          className="rounded-lg bg-red-600 px-5 py-2.5 text-white hover:bg-red-700"
+        >
+          Yes, Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
           <div className="flex items-center gap-2">
             {exportMessage && (
@@ -636,13 +907,25 @@ function TrackItem({
             <div className="flex-1 flex items-center justify-center w-full">
               <div className="relative aspect-[9/16] h-[520px] rounded-3xl overflow-hidden border border-border bg-black shadow-2xl">
 
-                <video
-                  ref={videoRef}
-                  src={clip?.url}
-                  className="w-full h-full object-cover"
-                  playsInline
-                  onClick={togglePlay}
-                />
+                <div className="relative w-full h-full">
+  {loading && (
+    <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10">
+      <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
+    </div>
+  )}
+
+  <video
+    ref={videoRef}
+    src={clip.url}
+    className="w-full h-full object-cover"
+    playsInline
+    onClick={togglePlay}
+    onLoadStart={() => setLoading(true)}
+    onWaiting={() => setLoading(true)}
+    onCanPlay={() => setLoading(false)}
+    onCanPlayThrough={() => setLoading(false)}
+  />
+</div>
 
                 {/* ═══ Subtitle Overlay ═══ */}
                 {activeSubtitle && (
@@ -669,9 +952,9 @@ function TrackItem({
                     className="absolute inset-0 flex items-center justify-center bg-black/20 cursor-pointer z-20"
                     onClick={togglePlay}
                   >
-                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 hover:bg-white/30 transition-colors">
+                   {!loading&& <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30 hover:bg-white/30 transition-colors">
                       <Play className="w-8 h-8 text-white ml-1" />
-                    </div>
+                      </div>}
                   </div>
                 )}
               </div>

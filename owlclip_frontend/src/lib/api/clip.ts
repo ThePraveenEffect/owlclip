@@ -20,3 +20,8 @@ export async function updateClip(
     body: JSON.stringify(data),
   });
 }
+
+
+export async function myClips(){
+  return apiClient(`/v1/dashboard/my-clips`);
+}

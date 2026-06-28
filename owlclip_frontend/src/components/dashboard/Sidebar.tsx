@@ -12,18 +12,41 @@ import {
   Flame,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import {useRouter} from 'next/navigation';
+import {apiClient} from '@/lib/api/client';
+import { env } from '@/config/env';
 
 const navItems = [
   { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
   { label: 'My Clips', href: '/dashboard/clips', icon: Scissors },
   { label: 'Billing', href: '/dashboard/billing', icon: CreditCard },
-  { label: 'Usage', href: '/dashboard/usage', icon: Clock },
-  { label: 'Settings', href: '/dashboard/settings', icon: Settings },
+  // { label: 'Usage', href: '/dashboard/usage', icon: Clock },
+  // { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
 export default function Sidebar() {
-  const pathname = usePathname();
 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+const handleLogout = async () => {
+    try {
+        await fetch(
+            `${env.BASE_URL}/v1/auth/logout`,
+            {
+                method: "POST",
+                credentials: "include",
+            }
+        );
+    } catch (e) {
+        console.error(e);
+    } finally {
+        window.location.href = "/";
+    }
+};
   return (
     <aside className="w-64 min-h-screen border-r border-border bg-card flex flex-col">
       {/* Brand */}
@@ -63,19 +86,59 @@ export default function Sidebar() {
       <div className="px-3 pb-6">
         <div className="border-t border-border pt-4">
           <div className="flex items-center gap-3 px-3 py-2.5">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-sm font-bold">
+            {/* <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-sm font-bold">
               C
-            </div>
+            </div> */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">CodeVeen</p>
-              <p className="text-xs text-muted-foreground truncate">Creator Plan</p>
+              <p className="text-md mx-7 font-medium text-foreground truncate">CodeVeen</p>
+              {/* <p className="text-xs text-muted-foreground truncate">Creator Plan</p> */}
             </div>
-            <button className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition">
-              <LogOut className="w-4 h-4" />
-            </button>
+            <button
+  onClick={() => setShowLogoutModal(true)}
+  className="p-1.5 rounded-lg hover:bg-red-500 text-muted-foreground hover:text-foreground transition"
+>
+  <LogOut className="w-6 h-6" />
+</button>
+
+{showLogoutModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="w-[90%] max-w-sm rounded-xl bg-background border border-border shadow-xl p-6">
+      <h2 className="text-xl font-semibold">
+        Sign Out
+      </h2>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        Are you sure you want to sign out?
+      </p>
+
+      <div className="mt-6 flex justify-end gap-3">
+        <button
+          onClick={() => setShowLogoutModal(false)}
+          className="rounded-lg border border-border px-4 py-2 hover:bg-muted transition"
+        >
+          No
+        </button>
+
+        <button
+          onClick={async () => {
+            setShowLogoutModal(false);
+            await handleLogout();
+          }}
+          className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 transition"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+)}
           </div>
         </div>
       </div>
-    </aside>
+    </aside>  
+
+    
+
+    
   );
 }
