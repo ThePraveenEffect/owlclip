@@ -2,7 +2,7 @@
 
 import Sidebar from '@/components/dashboard/Sidebar';
 import BillingSection from '@/components/dashboard/BillingSection';
-import { useBillingHistory } from '@/hooks/useBillingHistory';
+// import { useBillingHistory } from '@/hooks/useBillingHistory';
 
 export default function BillingPage() {
 

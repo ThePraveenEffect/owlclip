@@ -649,11 +649,7 @@ startFakeProgress();
           body: JSON.stringify([exportPayload]),
         });
         finishProgress();
-        console.log("Full API Response:", result);
-
-// 3. Access the property based on the log
-console.log("URL:", result.url);  
-        console.log(result.url);
+      
 
 setDownloadUrl(result.url);
 

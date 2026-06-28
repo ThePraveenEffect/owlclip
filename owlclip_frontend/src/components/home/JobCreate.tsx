@@ -45,7 +45,7 @@ export function JobCreate() {
 
             setSuccessMessage("Video link submitted successfully!");
             reset();
-            router.push(`/clips/${response.job_id}`);
+            router.push(`/dashboard/clips`);
         } catch (error: any) {
             console.error("Error:", error);
 
