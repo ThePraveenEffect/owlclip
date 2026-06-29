@@ -52,9 +52,10 @@ async def worker_loop(queue: QueueService):
                 
                 async with AsyncSessionLocal() as db:
                         await update_status(db, job_id, "FAILED")
+                        user_id = await get_current_user_id(msg["request"])
                         await refund_credits(
                                     db,
-                                    get_current_user_id,
+                                    user_id,
                                     10
                                 )
 
