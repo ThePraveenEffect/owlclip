@@ -106,7 +106,7 @@ source .venv/bin/activate
 
 now after this you will see the terminal prompt looks like this : 
 
-== (owlclip_backend_new) CodeVeen@antix1:~/OwlClip_C/owlclip_backend_new ==
+ (owlclip_backend_new) CodeVeen@antix1:~/OwlClip_C/owlclip_backend_new 
 
 Then you can run the backend :
 
