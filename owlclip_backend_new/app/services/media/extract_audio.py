@@ -61,16 +61,27 @@ def _download_and_extract(yt_url: str, temp_dir: str) -> ExtractedAudio:
         'node': {'path': '/usr/bin/node'}
     },
 
-        # ✅ FIX: Handle geo-restricted videos
-        'geo_bypass': True,
-        
-        # ✅ FIX: Retry on network errors
-        'retries': 3,
-        
-        # ✅ FIX: Add user agent to avoid 403 errors
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        "extractor_args": {
+        "youtube": {
+            "player_client": [
+                "android",
+                "web"
+            ]
         }
+    },
+
+    "http_headers": {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/138.0.0.0 Safari/537.36"
+        ),
+        "Accept-Language": "en-US,en;q=0.9",
+    },
+
+    "geo_bypass": True,
+    "retries": 10,
+    "socket_timeout": 60,
     }
     
     try:
