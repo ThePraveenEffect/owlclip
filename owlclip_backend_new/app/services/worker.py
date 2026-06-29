@@ -26,7 +26,9 @@ async def worker_loop(queue: QueueService):
                 continue
             
             job_id = msg["data"]["job_id"]
-            logger.info(f"Processing job: {job_id}")
+            user_id = msg["data"]["user_id"]
+            logger.info(f"Dequeued job: {job_id} for user: {user_id}")
+            
             
             try:
                 # Create FRESH session for status update
@@ -52,7 +54,7 @@ async def worker_loop(queue: QueueService):
                 
                 async with AsyncSessionLocal() as db:
                         await update_status(db, job_id, "FAILED")
-                        user_id = await get_current_user_id(msg["request"])
+                        
                         await refund_credits(
                                     db,
                                     user_id,
