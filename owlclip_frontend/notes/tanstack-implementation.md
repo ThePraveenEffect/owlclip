@@ -76,9 +76,3 @@ export function useAuth(){
 
 
 
-
-
-
-
-
-GROQ_API_KEY=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
