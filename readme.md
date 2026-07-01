@@ -70,6 +70,12 @@ you can remove services like ratelimiter , auth, database, queue, payments,
 worker etc. to make it work on your pc and you can use that engine.
 
 You also need groq api to make it work. 
+as well azure speech key like this :
+```
+AZURE_SPEECH_KEY=BMiDjdip5UcIn3ndzI05..........
+AZURE_SPEECH_REGION=.....
+```
+
 
 - owlclip_backend_new :
 
