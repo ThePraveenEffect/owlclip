@@ -79,4 +79,4 @@ __pycache__/
 .venv/
 owlclip.log
 *.mp3
-*.json
+
